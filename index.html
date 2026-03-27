@@ -392,6 +392,20 @@
         
         .unattempted-list { list-style: none; padding: 0; }
         .unattempted-item { padding: 10px; border-bottom: 1px solid #f1f5f9; color: #64748b; font-size: 11pt; }
+
+        /* Practice section in report */
+        .practice-summary-box { background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+        .practice-summary-box h3 { color: #6d28d9; margin: 0 0 14px; font-size: 15pt; }
+        .practice-stat-row { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 12px; }
+        .practice-stat .val { display: block; font-size: 22pt; font-weight: 900; color: #6d28d9; }
+        .practice-stat .lbl { font-size: 9pt; color: #64748b; font-weight: 700; text-transform: uppercase; }
+        .practice-item { margin-bottom: 10px; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 8px; display: flex; align-items: center; gap: 14px; }
+        .practice-item.correct  { border-left: 6px solid #10b981; background: #f0fdf4; }
+        .practice-item.partial  { border-left: 6px solid #f59e0b; background: #fffbeb; }
+        .practice-item.incorrect{ border-left: 6px solid #ef4444; background: #fef2f2; }
+        .pq-text  { flex: 1; font-size: 10pt; color: #1e293b; }
+        .pq-score { font-weight: 900; font-size: 12pt; white-space: nowrap; }
+        .pq-meta  { font-size: 9pt; color: #94a3b8; white-space: nowrap; text-align: right; }
         
         .summary-box { background: #f1f5f9; padding: 20px; border-radius: 12px; text-align: center; display: flex; justify-content: space-around; }
         .summary-stat { display: flex; flex-direction: column; }
@@ -463,6 +477,122 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* Practice Quiz */
+        .practice-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+        .practice-counter { background: #e0e7ff; color: var(--primary); padding: 6px 18px; border-radius: 100px; font-weight: 700; font-size: 0.95rem; }
+
+        /* Gamification */
+        .prac-score-pill {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 6px 18px;
+            border-radius: 100px;
+            font-weight: 800;
+            font-size: 1rem;
+            line-height: 1.3;
+            text-align: center;
+            min-width: 80px;
+        }
+        .prac-streak-pill {
+            background: #fff7ed;
+            border: 2px solid #fed7aa;
+            color: #9a3412;
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        .prac-streak-pill.hot {
+            background: linear-gradient(135deg, #f97316, #ef4444);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+            animation: pulse-streak 1s ease infinite alternate;
+        }
+        @keyframes pulse-streak {
+            from { transform: scale(1); }
+            to   { transform: scale(1.06); }
+        }
+        .points-popup {
+            position: fixed;
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--primary);
+            pointer-events: none;
+            z-index: 9999;
+            text-shadow: 0 2px 8px rgba(99,102,241,0.3);
+            animation: floatUp 1.3s ease-out forwards;
+        }
+        .points-popup.bonus { color: #f97316; }
+        @keyframes floatUp {
+            0%   { opacity: 1; transform: translateY(0) scale(1); }
+            60%  { opacity: 1; transform: translateY(-50px) scale(1.15); }
+            100% { opacity: 0; transform: translateY(-90px) scale(0.9); }
+        }
+        .milestone-toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120px);
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 16px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            z-index: 9998;
+            box-shadow: 0 8px 32px rgba(239, 68, 68, 0.35);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+            opacity: 0;
+            white-space: nowrap;
+        }
+        .milestone-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        .points-earned-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+            padding: 10px 14px;
+            background: #eff6ff;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--primary);
+            flex-wrap: wrap;
+        }
+        .points-earned-row.zero {
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+        .streak-bonus-tag {
+            background: #f97316;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .perfect-tag {
+            background: #10b981;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .hs-badge {
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
@@ -475,6 +605,7 @@
             <div class="mode-select">
                 <button class="mode-btn active" id="mode-learn" onclick="switchMode('learn')">📖 Start Learning</button>
                 <button class="mode-btn" id="mode-exam" onclick="switchMode('exam')">📝 Exam Practice</button>
+                <button class="mode-btn" id="mode-practice" onclick="switchMode('practice')">🎯 Practice Quiz</button>
                 <button class="mode-btn" onclick="exportReport()">📊 Generate Daily Report</button>
             </div>
         </div>
@@ -513,6 +644,28 @@
             </div>
         </div>
 
+        <!-- Practice Screen -->
+        <div id="practice-screen" class="hidden">
+            <div class="practice-header">
+                <div>
+                    <h2>Practice Quiz</h2>
+                    <p style="color: #64748b; font-size: 0.95rem;">One random question at a time</p>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <div class="prac-streak-pill" id="prac-streak-pill">🔥 <span id="prac-streak-count">0</span> streak</div>
+                    <div class="prac-score-pill">
+                        <div><span id="prac-score-total">0</span> <span style="font-size:0.75rem;opacity:0.85;">pts</span></div>
+                        <div style="font-size:0.68rem;opacity:0.8;">Best: <span id="prac-hs-val">0</span></div>
+                    </div>
+                    <span class="practice-counter" id="practice-counter">Q1</span>
+                </div>
+            </div>
+            <div id="practice-question-container"></div>
+            <div class="btn-row" style="margin-top: 16px;">
+                <button class="btn btn-secondary" onclick="switchMode('learn')">← Back to Learn</button>
+            </div>
+        </div>
+
         <!-- Hidden Report Template -->
         <div id="report-template" style="position: fixed; left: 0; top: 0; z-index: -1; opacity: 0; pointer-events: none; width: 800px;">
             <div id="report-export-container">
@@ -527,6 +680,35 @@
                 <div id="report-content"></div>
                 <div style="text-align: center; margin-top: 30px; color: #94a3b8; font-size: 10pt;">
                     Generated by Storage Practice Hub — OCR Specification 1.2
+                </div>
+            </div>
+        </div>
+
+        <!-- Milestone Toast -->
+        <div id="milestone-toast" class="milestone-toast"></div>
+
+        <!-- Teacher Override Modal -->
+        <div id="dev-modal" class="modal-overlay">
+            <div class="modal-content">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                    <h3 class="modal-title" style="margin:0;">⚙️ Teacher Override</h3>
+                    <span style="background:#fef2f2;color:#dc2626;padding:3px 12px;border-radius:100px;font-size:0.72rem;font-weight:700;letter-spacing:0.05em;">MODERATOR</span>
+                </div>
+                <p class="modal-text" id="dev-q-text" style="font-size:0.85rem;margin-bottom:16px;max-height:60px;overflow:hidden;"></p>
+                <div style="display:flex;gap:16px;align-items:center;margin-bottom:20px;">
+                    <div style="text-align:center;">
+                        <div style="font-size:0.78rem;font-weight:600;color:#64748b;margin-bottom:4px;">Current</div>
+                        <span id="dev-current-marks" style="font-size:1.5rem;font-weight:800;color:#ef4444;"></span>
+                    </div>
+                    <div style="font-size:1.4rem;color:#cbd5e1;margin-top:10px;">→</div>
+                    <div style="flex:1;">
+                        <div style="font-size:0.78rem;font-weight:600;color:#64748b;margin-bottom:4px;">Override to</div>
+                        <input type="number" id="dev-new-marks" class="modal-input" style="margin:0;" min="0">
+                    </div>
+                </div>
+                <div style="display:flex;gap:12px;">
+                    <button class="btn btn-secondary" style="flex:1;" onclick="closeDevModal()">Cancel</button>
+                    <button class="btn btn-primary" style="flex:2;" onclick="applyDevOverride()">Apply Override</button>
                 </div>
             </div>
         </div>
@@ -549,11 +731,26 @@
 let userStats = JSON.parse(localStorage.getItem('gcse_stats')) || {
     name: "",
     quizAttempts: [],
-    examAttempts: []
+    examAttempts: [],
+    practiceAttempts: []
 };
+if (!userStats.practiceAttempts) userStats.practiceAttempts = [];
 
 function saveStats() {
     localStorage.setItem('gcse_stats', JSON.stringify(userStats));
+}
+
+function recordPracticeAttempt(id, marks, total, topic) {
+    userStats.practiceAttempts.push({
+        date: new Date().toISOString(),
+        id,
+        marks,
+        total,
+        topic,
+        streak: practiceState.streak,
+        score: practiceState.score
+    });
+    saveStats();
 }
 
 function recordExamMark(id, marks, total, topic, answer) {
@@ -576,9 +773,15 @@ const examQuestions = [
         type: 'text',
         marks: 1,
         text: 'Define what is meant by "secondary storage".',
+        textVariants: [
+            'Define what is meant by "secondary storage".',
+            'What is secondary storage?',
+            'Explain what is meant by the term "secondary storage".',
+            'In your own words, describe what secondary storage is.'
+        ],
         scheme: ['Long-term/permanent storage of data and files (1)'],
         markCriteria: [
-            { keywords: ['permanent', 'long term', 'long-term', 'non-volatile', 'non volatile'], points: 1 }
+            { keywords: ['permanent', 'long term', 'long-term', 'non-volatile', 'non volatile', 'stores data', 'stores files', 'keeps data', 'power off', 'switched off', 'turned off'], points: 1 }
         ]
     },
     {
@@ -587,11 +790,17 @@ const examQuestions = [
         type: 'text',
         marks: 3,
         text: 'State three common types of storage that can be chosen from.',
+        textVariants: [
+            'State three common types of storage that can be chosen from.',
+            'Name three types of secondary storage.',
+            'Give three examples of secondary storage technologies.',
+            'List three different types of secondary storage.'
+        ],
         scheme: ['Magnetic (1)', 'Solid-state (1)', 'Optical (1)'],
         markCriteria: [
-            { keywords: ['magnetic', 'hdd', 'tape'], points: 1 },
-            { keywords: ['solid state', 'solid-state', 'ssd', 'flash'], points: 1 },
-            { keywords: ['optical', 'cd', 'dvd', 'blu-ray', 'bluray'], points: 1 }
+            { keywords: ['magnetic', 'hdd', 'tape', 'hard disk', 'hard drive', 'hard disk drive'], points: 1 },
+            { keywords: ['solid state', 'solid-state', 'ssd', 'flash', 'usb', 'memory card', 'memory stick', 'flash drive'], points: 1 },
+            { keywords: ['optical', 'cd', 'dvd', 'blu-ray', 'bluray', 'blu ray', 'disc', 'disk'], points: 1 }
         ]
     },
     {
@@ -614,6 +823,12 @@ const examQuestions = [
         type: 'text',
         marks: 4,
         text: 'State four characteristics of secondary storage devices that should be considered when choosing a device.',
+        textVariants: [
+            'State four characteristics of secondary storage devices that should be considered when choosing a device.',
+            'Give four factors to consider when selecting a secondary storage device.',
+            'State four properties of secondary storage that affect which device is chosen.',
+            'What four things should you consider when choosing a secondary storage device?'
+        ],
         scheme: ['Capacity/size', 'Speed', 'Cost', 'Durability', 'Reliability', 'Portability'],
         markCriteria: [
             { keywords: ['capacity', 'size', 'space', 'storage amount'], points: 1 },
@@ -636,6 +851,12 @@ const examQuestions = [
         type: 'text',
         marks: 2,
         text: 'Explain the difference between RAM and ROM.',
+        textVariants: [
+            'Explain the difference between RAM and ROM.',
+            'Compare RAM and ROM. State two differences.',
+            'How does RAM differ from ROM? Give two differences.',
+            'State two ways in which RAM and ROM are different.'
+        ],
         scheme: [
             'ROM is non-volatile, RAM is volatile (1)', 
             'ROM is read-only, RAM is read/write (1)',
@@ -672,6 +893,12 @@ const examQuestions = [
         type: 'text',
         marks: 2,
         text: 'Give two examples of data that a smart television could store in RAM.',
+        textVariants: [
+            'Give two examples of data that a smart television could store in RAM.',
+            'A laptop is currently running. Give two examples of data that could be stored in its RAM.',
+            'Give two examples of data that a games console could store in RAM while in use.',
+            'State two types of data a computer might store in RAM while it is switched on.'
+        ],
         scheme: ['Operating system (1)', 'Browser/Apps like Netflix/YouTube (1)', 'Video/Audio being streamed (1)', 'Buffered data (1)', 'Volume/Channel settings (1)'],
         markCriteria: [
             { keywords: ['os', 'operating system', 'software', 'system'], points: 1 },
@@ -692,10 +919,16 @@ const examQuestions = [
         type: 'text',
         marks: 2,
         text: 'A satellite navigation system uses RAM and ROM. State one characteristic of RAM and one characteristic of ROM.',
+        textVariants: [
+            'A satellite navigation system uses RAM and ROM. State one characteristic of RAM and one characteristic of ROM.',
+            'A smartphone contains both RAM and ROM. State one characteristic of RAM and one characteristic of ROM.',
+            'A laptop computer uses RAM and ROM. State one characteristic of each.',
+            'A digital camera uses RAM and ROM. State one characteristic of RAM and one characteristic of ROM.'
+        ],
         scheme: ['RAM: volatile/loses data when power off OR can be changed/read and write (1)', 'ROM: non-volatile/keeps data when power off OR cannot be changed/read only (1)'],
         markCriteria: [
-            { keywords: ['ram', 'volatile', 'temporary', 'changeable'], points: 1 },
-            { keywords: ['rom', 'non-volatile', 'non volatile', 'permanent', 'read only', 'read-only'], points: 1 }
+            { keywords: ['ram', 'volatile', 'temporary', 'changeable', 'read and write', 'read/write', 'write', 'loses', 'cleared', 'erased', 'editable', 'lost when'], points: 1 },
+            { keywords: ['rom', 'non-volatile', 'non volatile', 'permanent', 'read only', 'read-only', 'cannot be changed', 'cannot change', 'fixed', 'boot', 'bios', 'startup', 'start up', 'keeps data', 'not lost'], points: 1 }
         ]
     },
     {
@@ -705,12 +938,18 @@ const examQuestions = [
         type: 'text',
         marks: 4,
         text: 'Explain why virtual memory is needed. Describe one disadvantage of using virtual memory.',
+        textVariants: [
+            'Explain why virtual memory is needed. Describe one disadvantage of using virtual memory.',
+            'What is virtual memory used for? State one disadvantage of virtual memory.',
+            'Explain the purpose of virtual memory and describe one drawback of using it.',
+            'A computer uses virtual memory. Explain why this is needed and give one disadvantage.'
+        ],
         scheme: ['Virtual memory is needed when RAM becomes full (1)', 'It uses secondary storage to act as extra RAM (1)', 'Allows computer to keep running (1)', 'Disadvantage: virtual memory is much slower than RAM/causes lag (1)'],
         markCriteria: [
-            { keywords: ['ram is full', 'ram becomes full', 'not enough ram'], points: 1 },
-            { keywords: ['secondary storage', 'extra ram', 'virtual', 'hdd', 'ssd'], points: 1 },
-            { keywords: ['keep running', 'overflow', 'crash', 'shutdown'], points: 1 },
-            { keywords: ['slow', 'lag', 'disk thrashing', 'performance'], points: 1 }
+            { keywords: ['ram is full', 'ram becomes full', 'not enough ram', 'ram runs out', 'run out of ram', 'ram is insufficient', 'insufficient ram', 'ram full', 'no more ram', 'exceed'], points: 1 },
+            { keywords: ['secondary storage', 'extra ram', 'hdd', 'ssd', 'hard drive', 'hard disk', 'acts as ram', 'used as ram', 'additional ram', 'disk space'], points: 1 },
+            { keywords: ['keep running', 'overflow', 'crash', 'shutdown', 'continue', 'run more', 'prevent crash', 'avoid crash', 'keep working', 'still run'], points: 1 },
+            { keywords: ['slow', 'lag', 'disk thrashing', 'performance', 'slower', 'delay', 'takes longer', 'less efficient', 'reduced speed'], points: 1 }
         ]
     },
     {
@@ -719,13 +958,19 @@ const examQuestions = [
         type: 'text',
         marks: 2,
         text: 'What is cache memory?',
+        textVariants: [
+            'What is cache memory?',
+            'Describe what cache memory is.',
+            'Explain what is meant by "cache memory".',
+            'Define the term "cache memory".'
+        ],
         scheme: [
             'Cache is small, very fast memory located inside the CPU (1)',
             'It stores frequently used data and instructions (1)'
         ],
         markCriteria: [
-            { keywords: ['cpu', 'inside', 'fast', 'faster', 'speed'], points: 1 },
-            { keywords: ['frequently', 'often', 'common', 'data', 'instructions'], points: 1 }
+            { keywords: ['cpu', 'inside', 'fast', 'faster', 'speed', 'processor', 'within', 'small', 'tiny', 'closest', 'nearest'], points: 1 },
+            { keywords: ['frequently', 'often', 'common', 'instructions', 'regular', 'repeated', 'recently used', 'used a lot', 'most used'], points: 1 }
         ]
     },
     {
@@ -734,13 +979,19 @@ const examQuestions = [
         type: 'text',
         marks: 2,
         text: 'Explain why cache memory is useful.',
+        textVariants: [
+            'Explain why cache memory is useful.',
+            'Explain the benefit of having cache memory in a computer.',
+            'Why does cache memory improve the performance of a computer?',
+            'Describe how cache memory speeds up a computer.'
+        ],
         scheme: [
             'It allows the CPU to access frequently used data faster (1)',
             'This improves the overall performance/speed of the computer (1)'
         ],
         markCriteria: [
-            { keywords: ['speed', 'faster', 'access'], points: 1 },
-            { keywords: ['performance', 'efficiency', 'throughput'], points: 1 }
+            { keywords: ['speed', 'faster', 'access', 'quickly', 'retrieve', 'fetch', 'rapid', 'less waiting', 'reduces time', 'wait'], points: 1 },
+            { keywords: ['performance', 'efficiency', 'throughput', 'overall speed', 'overall performance', 'improve', 'quicker', 'better', 'reduces lag'], points: 1 }
         ]
     },
     {
@@ -750,15 +1001,21 @@ const examQuestions = [
         type: 'text',
         marks: 3,
         text: 'Describe how virtual memory works.',
+        textVariants: [
+            'Describe how virtual memory works.',
+            'Explain the process by which virtual memory operates.',
+            'Describe the steps involved when a computer uses virtual memory.',
+            'Explain how data is managed when virtual memory is in use.'
+        ],
         scheme: [
             'A section of secondary storage is partitioned to act as virtual memory (1)',
             'Data from RAM is transferred into virtual memory when RAM is full (1)',
             'Data is transferred back to RAM when needed (1)'
         ],
         markCriteria: [
-            { keywords: ['partition', 'section', 'secondary', 'hdd', 'ssd'], points: 1 },
-            { keywords: ['transfer', 'moved', 'load', 'ram', 'full'], points: 1 },
-            { keywords: ['back', 'needed', 'accessed'], points: 1 }
+            { keywords: ['partition', 'section', 'secondary', 'hdd', 'ssd', 'set aside', 'allocated', 'part of', 'hard drive', 'hard disk', 'disk space', 'portion'], points: 1 },
+            { keywords: ['transfer', 'moved', 'load', 'ram', 'full', 'copied', 'swapped', 'swap', 'paged', 'pagefile', 'sent to'], points: 1 },
+            { keywords: ['back', 'needed', 'accessed', 'return', 'retrieved', 'fetched', 'required', 'called', 'brought back', 'restored'], points: 1 }
         ]
     },
     {
@@ -767,6 +1024,11 @@ const examQuestions = [
         type: 'text',
         marks: 1,
         text: 'True or False: RAM is cleared when the device shuts down.',
+        textVariants: [
+            'True or False: RAM is cleared when the device shuts down.',
+            'True or False: Data stored in RAM is lost when the computer is turned off.',
+            'True or False: RAM is volatile.'
+        ],
         scheme: ['True (1)'],
         markCriteria: [
             { keywords: ['true', 'yes', 'correct'], points: 1 }
@@ -779,12 +1041,18 @@ const examQuestions = [
         type: 'text',
         marks: 4,
         text: 'A musician needs to buy a new secondary storage device. Recommend whether they should buy a magnetic or solid-state device. Justify your choice with two points.',
+        textVariants: [
+            'A musician needs to buy a new secondary storage device. Recommend whether they should buy a magnetic or solid-state device. Justify your choice with two points.',
+            'A music producer is setting up a recording studio and needs a storage device. Recommend magnetic or solid-state and justify with two points.',
+            'A musician performs live at gigs and needs to store music files. Recommend a magnetic or solid-state device and justify your choice with two points.',
+            'A band wants to record and store their audio tracks. Recommend either a magnetic or solid-state storage device and give two justifications.'
+        ],
         scheme: ['SSD recommended (1)', 'SSDs are faster so no delays in storing/reading music files (1)', 'SSDs are more durable/portable/use less power/make less noise (1)', 'Justification must relate to musician\'s needs (1)'],
         markCriteria: [
             { keywords: ['ssd', 'solid state', 'solid-state'], points: 1 },
             { keywords: ['fast', 'speed', 'read', 'write', 'quick'], points: 1 },
             { keywords: ['durable', 'portable', 'moving parts', 'noise', 'silent', 'robust'], points: 1 },
-            { keywords: ['music', 'files', 'play', 'session', 'studio', 'gig'], points: 1 }
+            { keywords: ['music', 'files', 'play', 'session', 'studio', 'gig', 'recording', 'record', 'audio', 'song', 'track', 'travel', 'on stage', 'perform', 'live', 'rehearsal'], points: 1 }
         ],
         inputs: [
             { label: 'Recommendation:', rows: 1 },
@@ -799,10 +1067,16 @@ const examQuestions = [
         type: 'text',
         marks: 2,
         text: 'State two disadvantages of magnetic storage.',
+        textVariants: [
+            'State two disadvantages of magnetic storage.',
+            'Give two disadvantages of using a hard disk drive (HDD).',
+            'A company is choosing between HDD and SSD. Give two reasons why magnetic storage might not be the best choice.',
+            'Describe two drawbacks of using magnetic storage devices.'
+        ],
         scheme: ['Can be damaged if dropped (1)', 'Slower than SSDs / Uses more power / Can be affected by magnets (1)'],
         markCriteria: [
-            { keywords: ['damage', 'drop', 'fragile', 'moving parts', 'durable', 'robust'], points: 1 },
-            { keywords: ['slow', 'speed', 'power', 'magnet', 'noisy', 'noise'], points: 1 }
+            { keywords: ['damage', 'drop', 'fragile', 'moving parts', 'durable', 'robust', 'break', 'broken', 'mechanical', 'shock', 'head crash', 'impact', 'physical', 'easily damaged'], points: 1 },
+            { keywords: ['slow', 'speed', 'power', 'magnet', 'noisy', 'noise', 'slower', 'magnetic field', 'corrupted', 'heavy', 'large', 'bulky', 'uses more', 'more power', 'less power efficient'], points: 1 }
         ]
     },
     {
@@ -811,14 +1085,20 @@ const examQuestions = [
         type: 'text',
         marks: 2,
         text: 'Explain why a computer system needs secondary storage as well as primary storage (RAM).',
+        textVariants: [
+            'Explain why a computer system needs secondary storage as well as primary storage (RAM).',
+            'Why must a computer have both secondary storage and RAM? Give two reasons.',
+            'A computer uses both RAM and a hard disk drive. Explain why both types of storage are needed.',
+            'Explain why RAM alone is not sufficient for a computer system.'
+        ],
         scheme: [
             'Secondary storage is non-volatile / keeps data when power is off (1)',
             'RAM is volatile / loses data when power is off (1)',
             'To store files/OS/programs permanently (1)'
         ],
         markCriteria: [
-            { keywords: ['non-volatile', 'non volatile', 'permanent', 'keeps', 'saved', 'power off', 'off'], points: 1 },
-            { keywords: ['volatile', 'loses', 'temporary', 'ram'], points: 1 }
+            { keywords: ['non-volatile', 'non volatile', 'permanent', 'keeps', 'saved', 'power off', 'long term', 'long-term', 'store programs', 'store files', 'store data'], points: 1 },
+            { keywords: ['volatile', 'loses', 'temporary', 'ram', 'bios', 'boot', 'startup', 'start up', 'currently running', 'active'], points: 1 }
         ],
         inputs: [
             { label: '1.', rows: 1 },
@@ -998,7 +1278,8 @@ function switchMode(mode) {
     document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('learn-screen').classList.add('hidden');
     document.getElementById('exam-screen').classList.add('hidden');
-    
+    document.getElementById('practice-screen').classList.add('hidden');
+
     if (mode === 'learn') {
         document.getElementById('mode-learn').classList.add('active');
         document.getElementById('learn-screen').classList.remove('hidden');
@@ -1006,6 +1287,15 @@ function switchMode(mode) {
         document.getElementById('mode-exam').classList.add('active');
         document.getElementById('exam-screen').classList.remove('hidden');
         loadExamQuestions();
+    } else if (mode === 'practice') {
+        document.getElementById('mode-practice').classList.add('active');
+        document.getElementById('practice-screen').classList.remove('hidden');
+        practiceState.score = 0;
+        practiceState.streak = 0;
+        practiceState.sessionCount = 0;
+        practiceState.usedIds = [];
+        updatePracticeHUD();
+        loadPracticeQuestion();
     }
 }
 
@@ -1070,52 +1360,70 @@ function generatePNGReport(name, callback) {
     }
 
     const today = new Date().toDateString();
-    const todayAttemptsRaw = userStats.examAttempts.filter(a => new Date(a.date).toDateString() === today);
-    
-    if (todayAttemptsRaw.length === 0) {
-        alert("No exam practice recorded for today yet!");
+    const todayAttemptsRaw   = userStats.examAttempts.filter(a => new Date(a.date).toDateString() === today);
+    const todayPracticeRaw   = userStats.practiceAttempts.filter(a => new Date(a.date).toDateString() === today);
+
+    if (todayAttemptsRaw.length === 0 && todayPracticeRaw.length === 0) {
+        alert("No exam practice or practice quiz recorded for today yet!");
         if (callback) callback();
         return;
     }
 
-    // Take latest attempt for each question
+    // ── Exam: latest attempt per question ──
     const latestAttempts = [];
     const seenIds = new Set();
     [...todayAttemptsRaw].sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(att => {
-        if (!seenIds.has(att.id)) {
-            latestAttempts.push(att);
-            seenIds.add(att.id);
-        }
+        if (!seenIds.has(att.id)) { latestAttempts.push(att); seenIds.add(att.id); }
     });
     latestAttempts.sort((a,b) => {
         const idxA = examQuestions.findIndex(q => q.id === a.id);
         const idxB = examQuestions.findIndex(q => q.id === b.id);
         return idxA - idxB;
     });
-
     const attemptedIds = new Set(latestAttempts.map(a => a.id));
-    const unattempted = examQuestions.filter(q => !attemptedIds.has(q.id));
+    const unattempted  = examQuestions.filter(q => !attemptedIds.has(q.id));
+
+    // ── Practice: compute summary stats ──
+    const pracQs        = todayPracticeRaw.length;
+    const pracMarks     = todayPracticeRaw.reduce((s, a) => s + a.marks, 0);
+    const pracTotal     = todayPracticeRaw.reduce((s, a) => s + a.total, 0);
+    const pracBestStreak= todayPracticeRaw.reduce((s, a) => Math.max(s, a.streak), 0);
+    const pracTopScore  = todayPracticeRaw.reduce((s, a) => Math.max(s, a.score), 0);
+    const pracAllTimeHS = parseInt(localStorage.getItem('gcse_prac_hs') || '0');
 
     document.getElementById('report-name-val').innerText = name;
-    document.getElementById('report-date-val').innerText = new Date().toLocaleDateString('en-GB', { 
-        day: 'numeric', month: 'long', year: 'numeric' 
+    document.getElementById('report-date-val').innerText = new Date().toLocaleDateString('en-GB', {
+        day: 'numeric', month: 'long', year: 'numeric'
     });
-    
+
+    // ── Overall summary box ──
     let contentHtml = `
         <div class="report-section">
             <div class="summary-box">
                 <div class="summary-stat">
                     <span class="stat-val">${latestAttempts.length} / ${examQuestions.length}</span>
-                    <span class="stat-lbl">Questions Attempted</span>
+                    <span class="stat-lbl">Exam Qs Done</span>
                 </div>
                 <div class="summary-stat">
-                    <span class="stat-val">${latestAttempts.reduce((acc, curr) => acc + curr.marks, 0)} / ${latestAttempts.reduce((acc, curr) => acc + curr.total, 0)}</span>
-                    <span class="stat-lbl">Today's Marks</span>
+                    <span class="stat-val">${latestAttempts.reduce((a,c)=>a+c.marks,0)} / ${latestAttempts.reduce((a,c)=>a+c.total,0)}</span>
+                    <span class="stat-lbl">Exam Marks</span>
+                </div>
+                <div class="summary-stat">
+                    <span class="stat-val">${pracQs}</span>
+                    <span class="stat-lbl">Practice Qs</span>
+                </div>
+                <div class="summary-stat">
+                    <span class="stat-val">${pracTopScore}</span>
+                    <span class="stat-lbl">Practice Score</span>
                 </div>
             </div>
-        </div>
+        </div>`;
+
+    // ── Exam breakdown ──
+    if (latestAttempts.length > 0) {
+        contentHtml += `
         <div class="report-section">
-            <h2>Marked Question Breakdown</h2>
+            <h2>Exam Practice Breakdown</h2>
             ${latestAttempts.map(att => {
                 const q = examQuestions.find(eq => eq.id === att.id);
                 const statusClass = att.marks === att.total ? 'correct' : (att.marks > 0 ? 'partial' : 'incorrect');
@@ -1123,31 +1431,55 @@ function generatePNGReport(name, callback) {
                     <div class="marked-item ${statusClass}">
                         <div class="item-score">${att.marks} / ${att.total}</div>
                         <div class="item-q">${q.text}</div>
-                        
                         <span class="item-label">Student Response</span>
                         <div class="item-ans">${att.answer || '(Empty)'}</div>
-                        
                         <span class="item-label">Mark Scheme</span>
-                        <div class="item-scheme">
-                            <ul style="margin: 0; padding-left: 20px;">
-                                ${q.scheme.map(s => `<li>${s}</li>`).join('')}
-                            </ul>
-                        </div>
-                    </div>
-                `;
+                        <div class="item-scheme"><ul style="margin:0;padding-left:20px;">
+                            ${q.scheme.map(s => `<li>${s}</li>`).join('')}
+                        </ul></div>
+                    </div>`;
             }).join('')}
-        </div>
-    `;
+        </div>`;
+    }
 
     if (unattempted.length > 0) {
         contentHtml += `
-            <div class="report-section">
-                <h2>Unattempted Questions</h2>
-                <ul class="unattempted-list">
-                    ${unattempted.map(q => `<li class="unattempted-item">${q.text} (${q.marks} marks)</li>`).join('')}
-                </ul>
+        <div class="report-section">
+            <h2>Unattempted Exam Questions</h2>
+            <ul class="unattempted-list">
+                ${unattempted.map(q => `<li class="unattempted-item">${q.text} (${q.marks} marks)</li>`).join('')}
+            </ul>
+        </div>`;
+    }
+
+    // ── Practice quiz section ──
+    if (pracQs > 0) {
+        contentHtml += `
+        <div class="report-section">
+            <div class="practice-summary-box">
+                <h3>🎯 Practice Quiz Performance</h3>
+                <div class="practice-stat-row">
+                    <div class="practice-stat"><span class="val">${pracQs}</span><span class="lbl">Questions</span></div>
+                    <div class="practice-stat"><span class="val">${pracMarks} / ${pracTotal}</span><span class="lbl">Marks Earned</span></div>
+                    <div class="practice-stat"><span class="val">${pracTopScore} pts</span><span class="lbl">Today's Score</span></div>
+                    <div class="practice-stat"><span class="val">🔥 ${pracBestStreak}</span><span class="lbl">Best Streak</span></div>
+                    <div class="practice-stat"><span class="val">${pracAllTimeHS} pts</span><span class="lbl">All-Time Best</span></div>
+                </div>
             </div>
-        `;
+            <h2>Practice Question Log</h2>
+            ${todayPracticeRaw.map((att, i) => {
+                const q = examQuestions.find(eq => eq.id === att.id);
+                const statusClass = att.marks === att.total ? 'correct' : (att.marks > 0 ? 'partial' : 'incorrect');
+                const time = new Date(att.date).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+                return `
+                    <div class="practice-item ${statusClass}">
+                        <span style="font-size:9pt;color:#94a3b8;min-width:22px;">#${i+1}</span>
+                        <span class="pq-text">${q ? q.text : att.id}</span>
+                        <span class="pq-score">${att.marks} / ${att.total}</span>
+                        <span class="pq-meta">${time}<br>🔥${att.streak} · ${att.score}pts</span>
+                    </div>`;
+            }).join('')}
+        </div>`;
     }
 
     const template = document.getElementById('report-template');
@@ -1366,6 +1698,314 @@ function autoMarkExam(questionId) {
 function revealAllExam() {
     document.querySelectorAll('#exam-screen .mark-scheme').forEach(ms => ms.classList.add('show'));
     document.querySelectorAll('#exam-screen .auto-mark-feedback').forEach(fb => fb.classList.add('show'));
+}
+
+// ── Practice Quiz ──────────────────────────────────────────────
+let practiceState = {
+    sessionCount: 0,
+    usedIds: [],
+    currentQuestion: null,
+    score: 0,
+    streak: 0,
+    highScore: parseInt(localStorage.getItem('gcse_prac_hs') || '0')
+};
+
+function loadPracticeQuestion() {
+    let available = examQuestions.filter(q => !practiceState.usedIds.includes(q.id));
+    if (available.length === 0) {
+        practiceState.usedIds = [];
+        available = [...examQuestions];
+    }
+    const q = available[Math.floor(Math.random() * available.length)];
+    practiceState.currentQuestion = q;
+    practiceState.usedIds.push(q.id);
+    practiceState.sessionCount++;
+
+    document.getElementById('practice-counter').textContent = `Q${practiceState.sessionCount}`;
+
+    const variants = q.textVariants && q.textVariants.length ? q.textVariants : [q.text];
+    const displayText = variants[Math.floor(Math.random() * variants.length)];
+
+    let html = `<div class="exam-paper-card">
+        <div class="q-number">
+            <div class="q-text">${displayText}</div>
+        </div>`;
+
+    if (q.type === 'text') {
+        if (q.inputs) {
+            html += `<div class="multi-input-container" style="margin-top: 24px;">
+                ${q.inputs.map((inp, idx) => `
+                    <div class="input-row">
+                        <span class="input-label ${inp.label.length > 3 ? 'large' : ''}">${inp.label}</span>
+                        <textarea class="dotted-input" id="prac-ans-${idx}"
+                                  style="min-height: ${(inp.rows || 1) * 31}px; margin-top: 0;"
+                                  placeholder="Type answer here..."></textarea>
+                    </div>`).join('')}
+            </div>`;
+        } else {
+            html += `<textarea class="dotted-input" id="prac-ans-0" placeholder="Type your answer here..."></textarea>`;
+        }
+    } else if (q.type === 'matching') {
+        html += `<div class="matching-container" style="margin-top: 20px;">
+            ${q.matches.map((m, j) => `
+                <div class="matching-row">
+                    <span style="font-weight: 500;">${m.term}</span>
+                    <select class="exam-select" id="prac-ans-${j}">
+                        <option value="">-- Select Match --</option>
+                        ${q.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                    </select>
+                </div>`).join('')}
+        </div>`;
+    }
+
+    html += `
+        <div class="marks-award">[${q.marks}]</div>
+        <div class="btn-row" style="justify-content: flex-start; margin-top: 32px; border-top: 1px solid #f1f5f9; padding-top: 16px;">
+            <button class="btn btn-primary" id="prac-check-btn" onclick="autoMarkPractice()">✨ Check Answer</button>
+        </div>
+        <div class="auto-mark-feedback" id="prac-feedback">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <span style="font-weight: 700;">Result:</span>
+                <span class="match-score" id="prac-score">0 / ${q.marks}</span>
+            </div>
+            <div id="prac-criteria" style="font-size: 0.9rem; line-height: 1.8;"></div>
+        </div>
+        <div class="mark-scheme" id="prac-ms">
+            <h4 style="color: #64748b; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">Mark Scheme</h4>
+            <ul style="border-left: 2px solid #e2e8f0; padding-left: 20px; list-style: none; font-size: 0.95rem;">
+                ${q.type === 'text'
+                    ? q.scheme.map(p => `<li style="margin-bottom: 6px;">• ${p}</li>`).join('')
+                    : q.matches.map(m => `<li style="margin-bottom: 6px;">• <strong>${m.term}</strong>: ${m.type}</li>`).join('')}
+            </ul>
+        </div>
+        <div id="prac-next-row" style="display: none;">
+            <div class="btn-row" style="justify-content: flex-start; margin-top: 16px;">
+                <button class="btn btn-success" onclick="loadPracticeQuestion()">Next Question →</button>
+            </div>
+        </div>
+    </div>`;
+
+    document.getElementById('practice-question-container').innerHTML = html;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function autoMarkPractice() {
+    const q = practiceState.currentQuestion;
+    if (!q) return;
+
+    let marksEarned = 0;
+    let criteriaHtml = '';
+    let userAnswer = '';
+
+    if (q.type === 'text') {
+        if (q.inputs) {
+            userAnswer = q.inputs.map((_, i) => (document.getElementById(`prac-ans-${i}`)?.value || '')).join(' ').toLowerCase();
+        } else {
+            userAnswer = (document.getElementById('prac-ans-0')?.value || '').toLowerCase();
+        }
+        if (!userAnswer.trim()) { alert('Please type an answer first!'); return; }
+
+        q.markCriteria.forEach(criterion => {
+            const found = criterion.keywords.find(kw => {
+                const pattern = kw.includes('.*') ? kw : `\\b${kw.toLowerCase()}`;
+                return new RegExp(pattern, 'i').test(userAnswer);
+            });
+            if (found) {
+                marksEarned += criterion.points;
+                criteriaHtml += `<div>✅ Found point related to: <span class="keyword-match">${found}</span> (+${criterion.points})</div>`;
+            } else {
+                criteriaHtml += `<div style="color:#94a3b8;">❌ Missing point: <span class="keyword-missing">${criterion.keywords[0]}</span></div>`;
+            }
+        });
+    } else if (q.type === 'matching') {
+        q.matches.forEach((m, j) => {
+            const sel = document.getElementById(`prac-ans-${j}`);
+            const val = sel?.value || '';
+            if (val === m.type) {
+                marksEarned += 1;
+                criteriaHtml += `<div>✅ Correct: <strong>${m.term}</strong> → <strong>${m.type}</strong> (+1)</div>`;
+                if (sel) { sel.style.borderColor = '#10b981'; sel.style.background = '#f0fdf4'; }
+            } else {
+                criteriaHtml += `<div style="color:#94a3b8;">❌ Incorrect: <strong>${m.term}</strong> (Selected: ${val || 'None'})</div>`;
+                if (sel) { sel.style.borderColor = '#ef4444'; sel.style.background = '#fef2f2'; }
+            }
+        });
+    }
+
+    marksEarned = Math.min(marksEarned, q.marks);
+
+    // ── Gamification ──
+    if (marksEarned > 0) {
+        practiceState.streak++;
+    } else {
+        practiceState.streak = 0;
+    }
+
+    const basePoints   = marksEarned * 10;
+    const streakBonus  = practiceState.streak >= 2 ? Math.min((practiceState.streak - 1) * 5, 30) : 0;
+    const perfectBonus = (marksEarned === q.marks && q.marks > 1) ? 10 : 0;
+    const pointsEarned = basePoints + streakBonus + perfectBonus;
+
+    practiceState.score += pointsEarned;
+    const isNewHS = practiceState.score > practiceState.highScore;
+    if (isNewHS) {
+        practiceState.highScore = practiceState.score;
+        localStorage.setItem('gcse_prac_hs', practiceState.highScore);
+    }
+    updatePracticeHUD();
+    recordPracticeAttempt(q.id, marksEarned, q.marks, q.topic);
+
+    // Points earned row
+    let pointsRowHtml = '';
+    if (pointsEarned > 0) {
+        pointsRowHtml = `<div class="points-earned-row">
+            <span>+${pointsEarned} pts</span>
+            ${streakBonus  > 0 ? `<span class="streak-bonus-tag">🔥 +${streakBonus} streak</span>` : ''}
+            ${perfectBonus > 0 ? `<span class="perfect-tag">⭐ +${perfectBonus} perfect</span>` : ''}
+            ${isNewHS ? `<span class="hs-badge">🏆 New Best!</span>` : ''}
+        </div>`;
+        showPointsPopup(pointsEarned, streakBonus + perfectBonus > 0);
+    } else {
+        pointsRowHtml = `<div class="points-earned-row zero">😬 No marks — streak reset. Keep going!</div>`;
+    }
+
+    document.getElementById('prac-score').textContent = `${marksEarned} / ${q.marks}`;
+    document.getElementById('prac-criteria').innerHTML = criteriaHtml + pointsRowHtml;
+    document.getElementById('prac-feedback').classList.add('show');
+    document.getElementById('prac-ms').classList.add('show');
+    document.getElementById('prac-next-row').style.display = 'block';
+    document.getElementById('prac-check-btn').disabled = true;
+    document.getElementById('prac-feedback').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    checkStreakMilestone(practiceState.streak);
+}
+
+function updatePracticeHUD() {
+    document.getElementById('prac-score-total').textContent = practiceState.score;
+    document.getElementById('prac-hs-val').textContent = practiceState.highScore;
+    document.getElementById('prac-streak-count').textContent = practiceState.streak;
+    const pill = document.getElementById('prac-streak-pill');
+    pill.classList.toggle('hot', practiceState.streak >= 3);
+}
+
+function showPointsPopup(points, hasBonus) {
+    const anchor = document.getElementById('prac-score-total');
+    const rect = anchor.getBoundingClientRect();
+    const popup = document.createElement('div');
+    popup.className = 'points-popup' + (hasBonus ? ' bonus' : '');
+    popup.textContent = `+${points} pts`;
+    popup.style.left = `${rect.left + rect.width / 2 - 30}px`;
+    popup.style.top  = `${rect.top + window.scrollY - 10}px`;
+    document.body.appendChild(popup);
+    setTimeout(() => popup.remove(), 1400);
+}
+
+function checkStreakMilestone(streak) {
+    const msgs = {
+        3:  '🔥 3 in a row! Keep going!',
+        5:  '🔥🔥 5 in a row! You\'re on fire!',
+        10: '⚡ 10 in a row! Unstoppable!',
+        15: '🏆 15 in a row! Absolute legend!'
+    };
+    if (msgs[streak]) showMilestoneToast(msgs[streak]);
+}
+
+function showMilestoneToast(msg) {
+    const toast = document.getElementById('milestone-toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3200);
+}
+
+// ── Teacher / Moderator Override (Shift+D E V) ─────────────────
+let devKeyBuffer = [];
+document.addEventListener('keydown', (e) => {
+    if (!e.shiftKey) { devKeyBuffer = []; return; }
+    devKeyBuffer.push(e.key.toLowerCase());
+    if (devKeyBuffer.length > 3) devKeyBuffer.shift();
+    if (devKeyBuffer.join('') === 'dev') {
+        devKeyBuffer = [];
+        openDevOverride();
+    }
+});
+
+function openDevOverride() {
+    const q = practiceState.currentQuestion;
+    const feedbackVisible = document.getElementById('prac-feedback')?.classList.contains('show');
+    if (!q || !feedbackVisible) return; // only active after a question is checked
+
+    const lastAttempt = [...userStats.practiceAttempts].reverse().find(a => a.id === q.id);
+    const currentMarks = lastAttempt ? lastAttempt.marks : 0;
+
+    const qText = q.text.length > 120 ? q.text.slice(0, 117) + '…' : q.text;
+    document.getElementById('dev-q-text').textContent = qText;
+    document.getElementById('dev-current-marks').textContent = `${currentMarks} / ${q.marks}`;
+
+    const input = document.getElementById('dev-new-marks');
+    input.max = q.marks;
+    input.value = currentMarks;
+    input.onkeydown = (e) => { if (e.key === 'Enter') applyDevOverride(); if (e.key === 'Escape') closeDevModal(); };
+
+    document.getElementById('dev-modal').classList.add('show');
+    input.focus();
+    input.select();
+}
+
+function closeDevModal() {
+    document.getElementById('dev-modal').classList.remove('show');
+}
+
+function applyDevOverride() {
+    const q = practiceState.currentQuestion;
+    if (!q) return;
+
+    const newMarks = parseInt(document.getElementById('dev-new-marks').value);
+    if (isNaN(newMarks) || newMarks < 0 || newMarks > q.marks) {
+        alert(`Enter a value between 0 and ${q.marks}.`);
+        return;
+    }
+
+    // Find the most recent attempt for this question
+    const attempts = userStats.practiceAttempts;
+    let lastIdx = -1;
+    for (let i = attempts.length - 1; i >= 0; i--) {
+        if (attempts[i].id === q.id) { lastIdx = i; break; }
+    }
+    if (lastIdx === -1) { closeDevModal(); return; }
+
+    const oldMarks = attempts[lastIdx].marks;
+    if (newMarks === oldMarks) { closeDevModal(); return; }
+
+    // Recalculate point delta
+    const baseDiff    = (newMarks - oldMarks) * 10;
+    const oldPerfect  = (oldMarks === q.marks && q.marks > 1) ? 10 : 0;
+    const newPerfect  = (newMarks === q.marks && q.marks > 1) ? 10 : 0;
+    const pointsDelta = baseDiff + (newPerfect - oldPerfect);
+
+    // Streak adjustment
+    if (oldMarks === 0 && newMarks > 0) {
+        practiceState.streak += 1;
+    } else if (oldMarks > 0 && newMarks === 0) {
+        practiceState.streak = Math.max(0, practiceState.streak - 1);
+    }
+
+    practiceState.score = Math.max(0, practiceState.score + pointsDelta);
+    if (practiceState.score > practiceState.highScore) {
+        practiceState.highScore = practiceState.score;
+        localStorage.setItem('gcse_prac_hs', practiceState.highScore);
+    }
+
+    // Persist updated attempt
+    attempts[lastIdx].marks  = newMarks;
+    attempts[lastIdx].score  = practiceState.score;
+    attempts[lastIdx].streak = practiceState.streak;
+    saveStats();
+
+    // Refresh visible feedback score
+    document.getElementById('prac-score').textContent = `${newMarks} / ${q.marks}`;
+    updatePracticeHUD();
+    closeDevModal();
+    showMilestoneToast(`✏️ Override applied — ${newMarks} / ${q.marks}`);
 }
 </script>
 </body>
