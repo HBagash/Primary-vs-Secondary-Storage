@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primary & Secondary Storage - GCSE CS Practice</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary: #ec4899;
+            --accent: #f59e0b;
+            --bg: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif; 
+            background: radial-gradient(circle at top left, #f1f5f9, #e2e8f0); 
+            color: var(--text-main); 
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+        
+        h1 { 
+            text-align: center; 
+            font-size: 2.5rem; 
+            margin-bottom: 8px; 
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .subtitle { 
+            text-align: center; 
+            color: var(--text-muted); 
+            margin-bottom: 40px; 
+            font-size: 1.1rem; 
+            font-weight: 500;
+        }
+
+        /* Glassmorphism Card Style */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: var(--glass-shadow);
+            padding: 30px;
+            margin-bottom: 24px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.1);
+        }
+
+        /* Mode Selection */
+        .mode-select { display: flex; gap: 16px; justify-content: center; margin-bottom: 40px; flex-wrap: wrap; }
+        .mode-btn { 
+            padding: 14px 28px; 
+            border: 2px solid var(--border); 
+            background: #fff; 
+            color: var(--text-main); 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-size: 1rem; 
+            font-weight: 600; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+        .mode-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+        .mode-btn.active { 
+            background: var(--primary); 
+            border-color: var(--primary); 
+            color: #fff;
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Question UI */
+        .question-card { 
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: var(--glass-shadow);
+            padding: 30px;
+            margin-bottom: 24px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .q-number { 
+            color: var(--primary); 
+            font-size: 0.9rem; 
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .q-marks { 
+            background: #e0e7ff; 
+            padding: 4px 12px; 
+            border-radius: 100px; 
+            font-size: 0.8rem; 
+            color: var(--primary); 
+        }
+        /* Exam Paper Aesthetic */
+        #exam-screen {
+            background-color: #f8fafc;
+            padding-bottom: 80px;
+        }
+
+        .exam-paper-card {
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            padding: 40px;
+            margin-bottom: 32px;
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+        }
+
+        .q-number {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .q-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            color: #1e293b;
+            flex: 1;
+        }
+
+        .marks-award {
+            position: absolute;
+            bottom: 24px;
+            right: 40px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        textarea.dotted-input {
+            width: 100%;
+            min-height: 155px;
+            background: repeating-linear-gradient(transparent, transparent 30px, #cbd5e1 30px, #cbd5e1 31px);
+            line-height: 31px;
+            padding: 0 8px;
+            border: none;
+            outline: none;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            background-attachment: local;
+            color: #334155;
+            margin-top: 10px;
+        }
+
+        .matching-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 4px;
+            border-bottom: 1px dotted #cbd5e1;
+        }
+
+        .exam-select {
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            padding: 4px 12px;
+            font-size: 0.95rem;
+            background: #fff;
+            width: 220px;
+            cursor: pointer;
+        }
+
+        .input-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .input-label {
+            font-weight: 500;
+            color: #475569;
+            margin-top: 6px;
+            min-width: 30px; /* For '1.', '2.' etc */
+            white-space: nowrap;
+        }
+
+        .input-label.large {
+            min-width: 160px; /* For 'Justification', 'RAM:' etc */
+        }
+
+        /* Exam Tabs */
+        .exam-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .exam-tab {
+            padding: 10px 24px;
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .exam-tab:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .exam-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Buttons */
+        .btn { 
+            padding: 12px 28px; 
+            border: none; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            font-size: 1rem; 
+            font-weight: 600; 
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover { background: var(--primary-hover); transform: scale(1.02); }
+        .btn-success { background: #10b981; color: #fff; }
+        .btn-success:hover { background: #059669; transform: scale(1.02); }
+        .btn-secondary { background: #f1f5f9; color: var(--text-main); border: 1px solid var(--border); }
+        .btn-secondary:hover { background: #e2e8f0; }
+
+        .btn-row { display: flex; gap: 16px; justify-content: center; margin: 30px 0; flex-wrap: wrap; }
+
+        /* Mark Scheme */
+        .mark-scheme { 
+            background: #ecfdf5; 
+            border: 1px solid #6ee7b7; 
+            border-radius: 12px; 
+            padding: 20px; 
+            margin-top: 16px; 
+            display: none; 
+            animation: slideDown 0.3s ease-out;
+        }
+        .mark-scheme h4 { color: #065f46; margin-bottom: 12px; font-weight: 700; }
+        .mark-scheme ul { padding-left: 20px; }
+        .mark-scheme li { margin-bottom: 8px; color: #065f46; }
+        .mark-scheme.show { display: block; }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Progress Bar */
+        .progress-bar { background: var(--border); border-radius: 100px; height: 10px; margin-bottom: 30px; overflow: hidden; }
+        .progress-fill { 
+            background: linear-gradient(to right, var(--primary), var(--secondary)); 
+            height: 100%; 
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+
+        /* Feedback/Auto-marking Styles */
+        .auto-mark-feedback {
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: 12px;
+            background: #f8fafc;
+            border: 1px dashed var(--border);
+            display: none;
+        }
+        .auto-mark-feedback.show { display: block; }
+        .match-score { font-weight: 800; color: var(--primary); font-size: 1.2rem; }
+        .keyword-match { background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+        .keyword-missing { color: #94a3b8; text-decoration: line-through; margin-right: 8px; font-size: 0.9rem; }
+
+        /* Learn Section */
+        .learn-nav { display: flex; gap: 12px; justify-content: center; margin-bottom: 30px; flex-wrap: wrap; }
+        .learn-nav-btn { 
+            padding: 10px 20px; 
+            border: 1px solid var(--border); 
+            background: #fff; 
+            color: var(--text-main); 
+            border-radius: 100px; 
+            cursor: pointer; 
+            font-size: 0.95rem; 
+            font-weight: 500;
+            transition: all 0.2s; 
+        }
+        .learn-nav-btn:hover, .learn-nav-btn.active { 
+            border-color: var(--primary); 
+            background: var(--primary); 
+            color: #fff; 
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+        
+        .learn-card { 
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: var(--glass-shadow);
+            padding: 30px;
+            margin-bottom: 24px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .learn-card h2 { color: var(--primary); font-size: 1.5rem; margin-bottom: 16px; font-weight: 800; }
+        .learn-card h3 { color: var(--secondary); font-size: 1.1rem; margin: 24px 0 12px; font-weight: 700; }
+        .learn-card p { margin-bottom: 16px; color: #475569; }
+        .learn-card ul, .learn-card ol { padding-left: 24px; margin-bottom: 20px; }
+        .learn-card li { margin-bottom: 10px; color: #475569; }
+        
+        .key-point { background: #eff6ff; border-left: 4px solid var(--primary); padding: 16px 20px; border-radius: 12px; margin: 20px 0; color: #1e40af; font-weight: 500; }
+        .misconception { background: #fff7ed; border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 12px; margin: 20px 0; color: #9a3412; }
+        
+        .compare-table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 20px 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+        .compare-table th { background: #f8fafc; padding: 14px; text-align: left; color: var(--primary); font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .compare-table td { padding: 14px; border-top: 1px solid var(--border); font-size: 1rem; color: #475569; }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 640px) {
+            .container { padding: 20px 16px; }
+            h1 { font-size: 1.8rem; }
+            .btn { width: 100%; }
+        }
+        /* Report Export Styles - Specifically for PNG generation */
+        #report-export-container {
+            background: white;
+            padding: 40px;
+            color: #1e293b;
+            font-family: 'Inter', sans-serif;
+            width: 800px;
+            border: 2px solid #e2e8f0;
+        }
+        .report-header { text-align: center; border-bottom: 3px solid #6366f1; padding-bottom: 20px; margin-bottom: 30px; }
+        .report-header h1 { color: #6366f1; margin: 0; font-size: 24pt; }
+        .report-user { display: flex; justify-content: space-between; margin-bottom: 30px; font-size: 14pt; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; }
+        .report-section { margin-bottom: 30px; }
+        .report-section h2 { font-size: 18pt; color: #1e293b; border-left: 5px solid #6366f1; padding-left: 15px; margin-bottom: 20px; }
+        
+        .marked-item { margin-bottom: 25px; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; page-break-inside: avoid; }
+        .marked-item.correct { border-left: 8px solid #10b981; background: #f0fdf4; }
+        .marked-item.partial { border-left: 8px solid #f59e0b; background: #fffbeb; }
+        .marked-item.incorrect { border-left: 8px solid #ef4444; background: #fef2f2; }
+        
+        .item-q { font-weight: 700; font-size: 14pt; margin-bottom: 10px; color: #1e293b; }
+        .item-label { font-weight: 800; font-size: 10pt; color: #64748b; text-transform: uppercase; margin-top: 15px; display: block; }
+        .item-ans { background: #fff; padding: 12px; border-radius: 6px; margin-top: 5px; border: 1px dashed #cbd5e1; min-height: 40px; font-style: italic; }
+        .item-scheme { background: #f8fafc; padding: 12px; border-radius: 6px; margin-top: 5px; border: 1px solid #e2e8f0; }
+        .item-score { float: right; font-size: 16pt; font-weight: 900; color: #1e293b; }
+        
+        .unattempted-list { list-style: none; padding: 0; }
+        .unattempted-item { padding: 10px; border-bottom: 1px solid #f1f5f9; color: #64748b; font-size: 11pt; }
+        
+        .summary-box { background: #f1f5f9; padding: 20px; border-radius: 12px; text-align: center; display: flex; justify-content: space-around; }
+        .summary-stat { display: flex; flex-direction: column; }
+        .stat-val { font-size: 24pt; font-weight: 900; color: #6366f1; }
+        .stat-lbl { font-size: 10pt; color: #64748b; font-weight: 700; }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 400px;
+            max-width: 90%;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: scale(0.95);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .modal-overlay.show .modal-content {
+            transform: scale(1);
+        }
+        .modal-title { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 12px; }
+        .modal-text { color: var(--text-muted); margin-bottom: 24px; font-size: 0.95rem; }
+        .modal-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+        .modal-input:focus { border-color: var(--primary); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Primary & Secondary Storage</h1>
+        <p class="subtitle">OCR GCSE Computer Science — Exam Practice</p>
+
+        <!-- Mode Selection -->
+        <div id="mode-screen">
+            <div class="mode-select">
+                <button class="mode-btn active" id="mode-learn" onclick="switchMode('learn')">📖 Start Learning</button>
+                <button class="mode-btn" id="mode-exam" onclick="switchMode('exam')">📝 Exam Practice</button>
+                <button class="mode-btn" onclick="exportReport()">📊 Generate Daily Report</button>
+            </div>
+        </div>
+
+        <!-- Learn Screen -->
+        <div id="learn-screen">
+            <div class="learn-nav">
+                <button class="learn-nav-btn active" onclick="showLearnTopic('secondary', this)">Secondary Storage</button>
+                <button class="learn-nav-btn" onclick="showLearnTopic('primary', this)">Primary Storage</button>
+                <button class="learn-nav-btn" onclick="showLearnTopic('ram-rom', this)">RAM vs ROM</button>
+                <button class="learn-nav-btn" onclick="showLearnTopic('cache-vm', this)">Cache & Virtual Memory</button>
+            </div>
+            <div id="learn-content">
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-primary" onclick="switchMode('exam')">Go to Exam Practice →</button>
+            </div>
+        </div>
+
+
+        <!-- Exam Screen -->
+        <div id="exam-screen" class="hidden">
+            <h2>Exam Questions</h2>
+            <p style="margin-bottom: 24px; color: #64748b;">OCR GCSE Computer Science - Specification 1.2</p>
+            
+            <div class="exam-tabs">
+                <button class="exam-tab active" onclick="filterExam('secondary')">Secondary Storage</button>
+                <button class="exam-tab" onclick="filterExam('primary')">Primary Storage</button>
+                <button class="exam-tab" onclick="filterExam('all')">All Questions</button>
+            </div>
+
+            <div id="exam-questions-container"></div>
+            <div class="btn-row">
+                <button class="btn btn-secondary" onclick="revealAllExam()">Show All Mark Schemes</button>
+                <button class="btn btn-primary" onclick="switchMode('learn')">← Back to Learn</button>
+            </div>
+        </div>
+
+        <!-- Hidden Report Template -->
+        <div id="report-template" style="position: absolute; left: -9999px; top: 0;">
+            <div id="report-export-container">
+                <div class="report-header">
+                    <h1>GCSE Computer Science Progress</h1>
+                    <p>1.2 Memory & Storage — Daily Assessment Report</p>
+                </div>
+                <div class="report-user">
+                    <div><strong>STUDENT:</strong> <span id="report-name-val"></span></div>
+                    <div><strong>DATE:</strong> <span id="report-date-val"></span></div>
+                </div>
+                <div id="report-content"></div>
+                <div style="text-align: center; margin-top: 30px; color: #94a3b8; font-size: 10pt;">
+                    Generated by Storage Practice Hub — OCR Specification 1.2
+                </div>
+            </div>
+        </div>
+
+        <!-- Name Input Modal -->
+        <div id="name-modal" class="modal-overlay">
+            <div class="modal-content">
+                <h3 class="modal-title">Complete Your Report</h3>
+                <p class="modal-text">Enter your name to personalize your GCSE progress report.</p>
+                <input type="text" id="student-name-input" class="modal-input" placeholder="Full Name">
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-secondary" style="flex: 1;" onclick="closeModal()">Cancel</button>
+                    <button class="btn btn-primary" style="flex: 2;" onclick="confirmExport()">Generate PNG →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+let userStats = JSON.parse(localStorage.getItem('gcse_stats')) || {
+    name: "",
+    quizAttempts: [],
+    examAttempts: []
+};
+
+function saveStats() {
+    localStorage.setItem('gcse_stats', JSON.stringify(userStats));
+}
+
+function recordExamMark(id, marks, total, topic, answer) {
+    userStats.examAttempts.push({
+        date: new Date().toISOString(),
+        id: id,
+        marks: marks,
+        total: total,
+        topic: topic,
+        answer: answer
+    });
+    saveStats();
+}
+
+
+const examQuestions = [
+    {
+        id: 'exam1',
+        topic: 'secondary',
+        type: 'text',
+        marks: 1,
+        text: 'Define what is meant by "secondary storage".',
+        scheme: ['Long-term/permanent storage of data and files (1)'],
+        markCriteria: [
+            { keywords: ['permanent', 'long term', 'long-term', 'non-volatile', 'non volatile'], points: 1 }
+        ]
+    },
+    {
+        id: 'exam2',
+        topic: 'secondary',
+        type: 'text',
+        marks: 3,
+        text: 'State three common types of storage that can be chosen from.',
+        scheme: ['Magnetic (1)', 'Solid-state (1)', 'Optical (1)'],
+        markCriteria: [
+            { keywords: ['magnetic', 'hdd', 'tape'], points: 1 },
+            { keywords: ['solid state', 'solid-state', 'ssd', 'flash'], points: 1 },
+            { keywords: ['optical', 'cd', 'dvd', 'blu-ray', 'bluray'], points: 1 }
+        ]
+    },
+    {
+        id: 'exam-match-1',
+        topic: 'secondary',
+        type: 'matching',
+        marks: 3,
+        text: 'Match the storage media to its primary technology.',
+        matches: [
+            { term: 'DVD-RW', type: 'Optical' },
+            { term: 'Hard Disk Drive', type: 'Magnetic' },
+            { term: 'USB Flash Drive', type: 'Solid-State' }
+        ],
+        options: ['Magnetic', 'Solid-State', 'Optical']
+    },
+    {
+        id: 'exam3',
+        topic: 'secondary',
+        inputs: [{ label: '1.', rows: 1 }, { label: '2.', rows: 1 }, { label: '3.', rows: 1 }, { label: '4.', rows: 1 }],
+        type: 'text',
+        marks: 4,
+        text: 'State four characteristics of secondary storage devices that should be considered when choosing a device.',
+        scheme: ['Capacity/size', 'Speed', 'Cost', 'Durability', 'Reliability', 'Portability'],
+        markCriteria: [
+            { keywords: ['capacity', 'size', 'space', 'storage amount'], points: 1 },
+            { keywords: ['speed', 'access', 'fast', 'quick', 'performance'], points: 1 },
+            { keywords: ['cost', 'price', 'cheap', 'expensive', 'value'], points: 1 },
+            { keywords: ['durability', 'tough', 'robust', 'fragile', 'durable'], points: 1 },
+            { keywords: ['reliability', 'reliable', 'stable', 'consistent'], points: 1 },
+            { keywords: ['portability', 'portable', 'small', 'lightweight', 'carry'], points: 1 }
+        ],
+        inputs: [
+            { label: '1.', rows: 1 },
+            { label: '2.', rows: 1 },
+            { label: '3.', rows: 1 },
+            { label: '4.', rows: 1 }
+        ]
+    },
+    {
+        id: 'exam4',
+        topic: 'primary',
+        type: 'text',
+        marks: 2,
+        text: 'Explain the difference between RAM and ROM.',
+        scheme: [
+            'ROM is non-volatile, RAM is volatile (1)', 
+            'ROM is read-only, RAM is read/write (1)',
+            'ROM stores startup/BIOS, RAM stores current OS/apps/instructions (1)'
+        ],
+        markCriteria: [
+            { keywords: ['ram(?:(?!rom).)*volatile', 'volatile(?:(?!rom).)*ram', 'rom(?:(?!ram).)*non.volatile', 'non.volatile(?:(?!ram).)*rom'], points: 1 },
+            { keywords: ['rom(?:(?!ram).)*read.only', 'read.only(?:(?!ram).)*rom', 'ram(?:(?!rom).)*read and write', 'read and write(?:(?!rom).)*ram', 'ram(?:(?!rom).)*write'], points: 1 },
+            { keywords: ['ram(?:(?!rom).)*currently', 'currently(?:(?!rom).)*ram', 'ram(?:(?!rom).)*active', 'active(?:(?!rom).)*ram', 'ram(?:(?!rom).)*in use', 'in use(?:(?!rom).)*ram', 'ram(?:(?!rom).)*instructions'], points: 1 },
+            { keywords: ['rom(?:(?!ram).)*bios', 'bios(?:(?!ram).)*rom', 'rom(?:(?!ram).)*startup', 'startup(?:(?!ram).)*rom', 'rom(?:(?!ram).)*boot', 'boot(?:(?!ram).)*rom'], points: 1 }
+        ]
+    },
+    {
+        id: 'exam-match-2',
+        topic: 'primary',
+        type: 'matching',
+        marks: 3,
+        text: 'Match the memory type to its correct description.',
+        matches: [
+            { term: 'ROM', type: 'Non-volatile, stores boot instructions' },
+            { term: 'RAM', type: 'Volatile, stores currently running programs' },
+            { term: 'Cache', type: 'Inside CPU, stores frequent instructions' }
+        ],
+        options: [
+            'Non-volatile, stores boot instructions',
+            'Volatile, stores currently running programs',
+            'Inside CPU, stores frequent instructions'
+        ]
+    },
+    {
+        id: 'exam5',
+        topic: 'primary',
+        inputs: [{ label: '1.', rows: 1 }, { label: '2.', rows: 1 }],
+        type: 'text',
+        marks: 2,
+        text: 'Give two examples of data that a smart television could store in RAM.',
+        scheme: ['Operating system (1)', 'Browser/Apps like Netflix/YouTube (1)', 'Video/Audio being streamed (1)', 'Buffered data (1)', 'Volume/Channel settings (1)'],
+        markCriteria: [
+            { keywords: ['os', 'operating system', 'software', 'system'], points: 1 },
+            { keywords: ['app', 'browser', 'netflix', 'youtube', 'chrome', 'program'], points: 1 },
+            { keywords: ['video', 'movie', 'film', 'audio', 'music', 'stream'], points: 1 },
+            { keywords: ['buffer', 'download', 'temp'], points: 1 },
+            { keywords: ['channel', 'volume', 'setting', 'button'], points: 1 }
+        ],
+        inputs: [
+            { label: '1.', rows: 1 },
+            { label: '2.', rows: 1 }
+        ]
+    },
+    {
+        id: 'exam6',
+        topic: 'primary',
+        inputs: [{ label: 'RAM Characteristic:', rows: 2 }, { label: 'ROM Characteristic:', rows: 2 }],
+        type: 'text',
+        marks: 2,
+        text: 'A satellite navigation system uses RAM and ROM. State one characteristic of RAM and one characteristic of ROM.',
+        scheme: ['RAM: volatile/loses data when power off OR can be changed/read and write (1)', 'ROM: non-volatile/keeps data when power off OR cannot be changed/read only (1)'],
+        markCriteria: [
+            { keywords: ['ram', 'volatile', 'temporary', 'changeable'], points: 1 },
+            { keywords: ['rom', 'non-volatile', 'non volatile', 'permanent', 'read only', 'read-only'], points: 1 }
+        ]
+    },
+    {
+        id: 'exam7',
+        topic: 'primary',
+        inputs: [{ label: 'Why needed:', rows: 2 }, { label: 'Disadvantage:', rows: 2 }],
+        type: 'text',
+        marks: 4,
+        text: 'Explain why virtual memory is needed. Describe one disadvantage of using virtual memory.',
+        scheme: ['Virtual memory is needed when RAM becomes full (1)', 'It uses secondary storage to act as extra RAM (1)', 'Allows computer to keep running (1)', 'Disadvantage: virtual memory is much slower than RAM/causes lag (1)'],
+        markCriteria: [
+            { keywords: ['ram is full', 'ram becomes full', 'not enough ram'], points: 1 },
+            { keywords: ['secondary storage', 'extra ram', 'virtual', 'hdd', 'ssd'], points: 1 },
+            { keywords: ['keep running', 'overflow', 'crash', 'shutdown'], points: 1 },
+            { keywords: ['slow', 'lag', 'disk thrashing', 'performance'], points: 1 }
+        ]
+    },
+    {
+        id: 'exam-cache-1',
+        topic: 'primary',
+        type: 'text',
+        marks: 2,
+        text: 'What is cache memory?',
+        scheme: [
+            'Cache is small, very fast memory located inside the CPU (1)',
+            'It stores frequently used data and instructions (1)'
+        ],
+        markCriteria: [
+            { keywords: ['cpu', 'inside', 'fast', 'faster', 'speed'], points: 1 },
+            { keywords: ['frequently', 'often', 'common', 'data', 'instructions'], points: 1 }
+        ]
+    },
+    {
+        id: 'exam-cache-2',
+        topic: 'primary',
+        type: 'text',
+        marks: 2,
+        text: 'Explain why cache memory is useful.',
+        scheme: [
+            'It allows the CPU to access frequently used data faster (1)',
+            'This improves the overall performance/speed of the computer (1)'
+        ],
+        markCriteria: [
+            { keywords: ['speed', 'faster', 'access'], points: 1 },
+            { keywords: ['performance', 'efficiency', 'throughput'], points: 1 }
+        ]
+    },
+    {
+        id: 'exam-vm-works',
+        topic: 'primary',
+        inputs: [{ label: 'Step 1:', rows: 1 }, { label: 'Step 2:', rows: 1 }, { label: 'Step 3:', rows: 1 }],
+        type: 'text',
+        marks: 3,
+        text: 'Describe how virtual memory works.',
+        scheme: [
+            'A section of secondary storage is partitioned to act as virtual memory (1)',
+            'Data from RAM is transferred into virtual memory when RAM is full (1)',
+            'Data is transferred back to RAM when needed (1)'
+        ],
+        markCriteria: [
+            { keywords: ['partition', 'section', 'secondary', 'hdd', 'ssd'], points: 1 },
+            { keywords: ['transfer', 'moved', 'load', 'ram', 'full'], points: 1 },
+            { keywords: ['back', 'needed', 'accessed'], points: 1 }
+        ]
+    },
+    {
+        id: 'exam-tf-1',
+        topic: 'primary',
+        type: 'text',
+        marks: 1,
+        text: 'True or False: RAM is cleared when the device shuts down.',
+        scheme: ['True (1)'],
+        markCriteria: [
+            { keywords: ['true', 'yes', 'correct'], points: 1 }
+        ]
+    },
+    {
+        id: 'exam8',
+        topic: 'secondary',
+        inputs: [{ label: 'Recommended device:', rows: 1 }, { label: 'Justification 1:', rows: 2 }, { label: 'Justification 2:', rows: 2 }],
+        type: 'text',
+        marks: 4,
+        text: 'A musician needs to buy a new secondary storage device. Recommend whether they should buy a magnetic or solid-state device. Justify your choice with two points.',
+        scheme: ['SSD recommended (1)', 'SSDs are faster so no delays in storing/reading music files (1)', 'SSDs are more durable/portable/use less power/make less noise (1)', 'Justification must relate to musician\'s needs (1)'],
+        markCriteria: [
+            { keywords: ['ssd', 'solid state', 'solid-state'], points: 1 },
+            { keywords: ['fast', 'speed', 'read', 'write', 'quick'], points: 1 },
+            { keywords: ['durable', 'portable', 'moving parts', 'noise', 'silent', 'robust'], points: 1 },
+            { keywords: ['music', 'files', 'play', 'session', 'studio', 'gig'], points: 1 }
+        ],
+        inputs: [
+            { label: 'Recommendation:', rows: 1 },
+            { label: 'Justification 1:', rows: 2 },
+            { label: 'Justification 2:', rows: 2 }
+        ]
+    },
+    {
+        id: 'exam9',
+        topic: 'secondary',
+        inputs: [{ label: '1.', rows: 1 }, { label: '2.', rows: 1 }],
+        type: 'text',
+        marks: 2,
+        text: 'State two disadvantages of magnetic storage.',
+        scheme: ['Can be damaged if dropped (1)', 'Slower than SSDs / Uses more power / Can be affected by magnets (1)'],
+        markCriteria: [
+            { keywords: ['damage', 'drop', 'fragile', 'moving parts', 'durable', 'robust'], points: 1 },
+            { keywords: ['slow', 'speed', 'power', 'magnet', 'noisy', 'noise'], points: 1 }
+        ]
+    },
+    {
+        id: 'exam10',
+        topic: 'secondary',
+        type: 'text',
+        marks: 2,
+        text: 'Explain why a computer system needs secondary storage as well as primary storage (RAM).',
+        scheme: [
+            'Secondary storage is non-volatile / keeps data when power is off (1)',
+            'RAM is volatile / loses data when power is off (1)',
+            'To store files/OS/programs permanently (1)'
+        ],
+        markCriteria: [
+            { keywords: ['non-volatile', 'non volatile', 'permanent', 'keeps', 'saved', 'power off', 'off'], points: 1 },
+            { keywords: ['volatile', 'loses', 'temporary', 'ram'], points: 1 }
+        ],
+        inputs: [
+            { label: '1.', rows: 1 },
+            { label: '2.', rows: 1 }
+        ]
+    }
+];
+
+const learnContent = {
+    secondary: `
+        <div class="learn-card">
+            <h2>What is Secondary Storage?</h2>
+            <p>Secondary storage is hardware that stores data <strong>permanently</strong>. Unlike RAM, it keeps your files even when the computer is turned off.</p>
+            <div class="key-point">Secondary storage is <strong>non-volatile</strong> — it does not lose data when the power is off.</div>
+            <h3>Why do we need it?</h3>
+            <ul>
+                <li>To permanently store programs and data</li>
+                <li>To store files when they are not currently being used by the CPU</li>
+                <li>To keep backups in case original files are damaged or lost</li>
+            </ul>
+            <div class="misconception"><strong>Common mistake:</strong> Students confuse volatile and non-volatile. Remember — <em>volatile = disappears</em> (think of it evaporating). RAM is volatile, secondary storage is non-volatile.</div>
+        </div>
+        <div class="learn-card">
+            <h2>Types of Secondary Storage</h2>
+            <h3>1. Magnetic Storage (e.g. HDD, magnetic tape)</h3>
+            <p>Uses <strong>spinning discs</strong> coated in magnetic material. A read/write head moves over the disc. Tiny areas are magnetised or not magnetised to store 1s and 0s.</p>
+            <ul>
+                <li>✅ Cheap for large capacities</li>
+                <li>✅ Reliable over long periods</li>
+                <li>✅ Infinitely rewritable</li>
+                <li>❌ Can be damaged if dropped (moving parts)</li>
+                <li>❌ Slower than SSDs</li>
+                <li>❌ Uses more power</li>
+            </ul>
+
+            <h3>2. Solid-State Storage (e.g. SSD, USB stick)</h3>
+            <p>Stores data <strong>electronically</strong> in tiny memory cells. Each cell holds an electrical charge (1) or no charge (0). <strong>No moving parts.</strong></p>
+            <ul>
+                <li>✅ Much faster read/write speeds</li>
+                <li>✅ More durable — no moving parts</li>
+                <li>✅ Uses less power, makes no noise</li>
+                <li>❌ More expensive per GB</li>
+                <li>❌ Limited write cycles</li>
+            </ul>
+
+            <h3>3. Optical Storage (e.g. CD, DVD, Blu-ray)</h3>
+            <p>Uses <strong>lasers</strong> to read and write data on a disc.</p>
+            <ul>
+                <li>✅ Cheap and portable</li>
+                <li>✅ Good for distributing media (films, music, games)</li>
+                <li>❌ Slow and limited capacity</li>
+                <li>❌ Can be scratched easily</li>
+            </ul>
+            <div class="misconception"><strong>Common mistake:</strong> Don't say HDDs use lasers — that's optical storage. HDDs use magnetism.</div>
+        </div>
+        <div class="learn-card">
+            <h2>HDD vs SSD Comparison</h2>
+            <table class="compare-table">
+                <tr><th>Feature</th><th>HDD</th><th>SSD</th></tr>
+                <tr><td>Technology</td><td>Spinning magnetic discs</td><td>Electronic memory cells</td></tr>
+                <tr><td>Speed</td><td>Slower</td><td>Much faster</td></tr>
+                <tr><td>Cost</td><td>Cheaper per GB</td><td>More expensive per GB</td></tr>
+                <tr><td>Durability</td><td>Less durable (moving parts)</td><td>More durable (no moving parts)</td></tr>
+                <tr><td>Power</td><td>Uses more power</td><td>Uses less power</td></tr>
+                <tr><td>Noise</td><td>Makes noise (spinning)</td><td>Silent</td></tr>
+            </table>
+            <div class="key-point"><strong>Exam tip:</strong> When comparing, always say <em>why</em> — e.g. "SSDs are more durable <strong>because they have no moving parts</strong>."</div>
+        </div>
+        <div class="learn-card">
+            <h2>Storage Device vs Storage Media</h2>
+            <p><strong>Storage device</strong> = the machine doing the storing (e.g. a disc drive)</p>
+            <p><strong>Storage media</strong> = the material/object that data is stored on (e.g. the disc itself)</p>
+        </div>
+    `,
+    primary: `
+        <div class="learn-card">
+            <h2>What is Primary Storage?</h2>
+            <p>Primary storage is the computer's <strong>main memory</strong>. It stores instructions and data that are being used <strong>right now</strong> by the CPU.</p>
+            <div class="key-point">Primary storage is much <strong>faster</strong> to access than secondary storage. That's why the CPU uses it for active tasks.</div>
+            <h3>Types of Primary Storage</h3>
+            <ul>
+                <li><strong>RAM</strong> — Random Access Memory</li>
+                <li><strong>ROM</strong> — Read Only Memory</li>
+                <li><strong>Cache</strong> — Very fast memory inside the CPU</li>
+            </ul>
+            <div class="misconception"><strong>Common mistake:</strong> Students sometimes think an SSD is primary storage because it's fast. It's not — SSDs are secondary storage. Primary storage = RAM, ROM, and cache only.</div>
+        </div>
+        <div class="learn-card">
+            <h2>Why Can't We Just Use an SSD Instead of RAM?</h2>
+            <p>Even the fastest SSD is <strong>much slower</strong> than RAM. The CPU needs instant access to the instructions it's currently running. Secondary storage is designed for long-term storage, not live processing.</p>
+            <div class="key-point">Think of it like this: RAM is your desk (fast access to what you're working on now). Secondary storage is your filing cabinet (stores everything else).</div>
+        </div>
+    `,
+    "ram-rom": `
+        <div class="learn-card">
+            <h2>RAM — Random Access Memory</h2>
+            <p>RAM <strong>temporarily</strong> stores program instructions and data that the CPU is currently using.</p>
+            <h3>Key Features</h3>
+            <ul>
+                <li><strong>Volatile</strong> — all data is lost when the power is turned off</li>
+                <li><strong>Very fast</strong> — much faster than secondary storage</li>
+                <li><strong>Read and write</strong> — contents can be changed</li>
+                <li><strong>Temporary</strong> — only holds data while programs are running</li>
+            </ul>
+            <div class="misconception"><strong>Common mistake:</strong> RAM does NOT store the boot-up instructions — that's ROM. RAM does NOT store files permanently — that's secondary storage.</div>
+        </div>
+        <div class="learn-card">
+            <h2>ROM — Read Only Memory</h2>
+            <p>ROM stores the <strong>start-up instructions</strong> the computer needs when it first turns on.</p>
+            <h3>Key Features</h3>
+            <ul>
+                <li><strong>Non-volatile</strong> — keeps data when power is off</li>
+                <li><strong>Read-only</strong> — contents cannot usually be changed</li>
+                <li><strong>Small</strong> — only stores essential start-up instructions</li>
+                <li><strong>Permanent</strong> — data stays the same</li>
+            </ul>
+            <h3>Why is ROM essential?</h3>
+            <p>When the computer turns on, RAM is <strong>empty</strong>. ROM tells the CPU what to do first, where the operating system is, and how to load it into RAM.</p>
+            <div class="key-point"><strong>Without ROM, the computer would not start at all.</strong></div>
+        </div>
+        <div class="learn-card">
+            <h2>RAM vs ROM — Key Comparison</h2>
+            <table class="compare-table">
+                <tr><th>Feature</th><th>RAM</th><th>ROM</th></tr>
+                <tr><td>Volatile?</td><td>Yes — loses data without power</td><td>No — keeps data without power</td></tr>
+                <tr><td>Can be changed?</td><td>Yes — read and write</td><td>No — read only</td></tr>
+                <tr><td>Purpose</td><td>Stores current instructions/data</td><td>Stores start-up instructions</td></tr>
+                <tr><td>Duration</td><td>Temporary</td><td>Permanent</td></tr>
+            </table>
+            <div class="key-point"><strong>Exam tip:</strong> A common 4-mark question asks for two differences between RAM and ROM. Always state the difference AND explain what it means (e.g. "RAM is volatile, which means it loses data when power is off").</div>
+        </div>
+    `,
+    "cache-vm": `
+        <div class="learn-card">
+            <h2>Cache Memory</h2>
+            <p>Cache is a <strong>tiny, super-fast</strong> memory located <strong>inside the CPU</strong>.</p>
+            <p>It stores <strong>frequently used instructions and data</strong> so the CPU can access them much faster than fetching from RAM.</p>
+            <h3>How it works</h3>
+            <ul>
+                <li>First time data is needed → RAM provides it → cache stores a copy</li>
+                <li>Next time the same data is needed → cache provides it instantly (<strong>cache hit</strong>)</li>
+                <li>If cache is full and data has been removed → RAM must fetch it again (<strong>cache miss</strong>)</li>
+            </ul>
+            <div class="key-point">Cache is faster than RAM, but much smaller. It speeds up processing by reducing how often the CPU has to wait for data from RAM.</div>
+            <div class="misconception"><strong>Common mistake:</strong> Cache and RAM are NOT the same thing. Cache is smaller, faster, and sits inside the CPU itself.</div>
+        </div>
+        <div class="learn-card">
+            <h2>Virtual Memory</h2>
+            <p>Virtual memory is when the computer uses part of <strong>secondary storage</strong> (e.g. SSD or HDD) as <strong>extra RAM</strong> when the real RAM is full.</p>
+            <h3>How it works</h3>
+            <ol style="padding-left:20px; margin-bottom:10px;">
+                <li style="margin-bottom:6px; color:#cbd5e1;">A section of secondary storage is set aside to act as virtual memory</li>
+                <li style="margin-bottom:6px; color:#cbd5e1;">When RAM is full, inactive data is moved from RAM into virtual memory</li>
+                <li style="margin-bottom:6px; color:#cbd5e1;">When that data is needed again, it is moved back into RAM</li>
+            </ol>
+            <h3>Advantages</h3>
+            <ul>
+                <li>Allows the computer to keep running when RAM is full</li>
+                <li>Gives extra temporary memory space</li>
+            </ul>
+            <h3>Disadvantages</h3>
+            <ul>
+                <li>Much slower than real RAM</li>
+                <li>Can cause lag and slow switching between apps</li>
+            </ul>
+            <div class="misconception"><strong>Common mistake:</strong> Virtual memory is NOT as fast as RAM. It's a workaround, not a replacement. If a question asks for a disadvantage, always mention it's slower.</div>
+        </div>
+    `
+};
+
+let currentExamTopic = 'secondary';
+
+// Show learn content on load
+showLearnTopic('secondary', document.querySelector('.learn-nav-btn'));
+
+function switchMode(mode) {
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('learn-screen').classList.add('hidden');
+    document.getElementById('exam-screen').classList.add('hidden');
+    
+    if (mode === 'learn') {
+        document.getElementById('mode-learn').classList.add('active');
+        document.getElementById('learn-screen').classList.remove('hidden');
+    } else if (mode === 'exam') {
+        document.getElementById('mode-exam').classList.add('active');
+        document.getElementById('exam-screen').classList.remove('hidden');
+        loadExamQuestions();
+    }
+}
+
+function showLearnTopic(topic, btn) {
+    document.querySelectorAll('.learn-nav-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    document.getElementById('learn-content').innerHTML = learnContent[topic];
+}
+
+
+function exportReport() {
+    const modal = document.getElementById('name-modal');
+    const input = document.getElementById('student-name-input');
+    input.value = userStats.name || "";
+    modal.classList.add('show');
+    input.focus();
+    
+    // Allow 'Enter' key to trigger confirm
+    input.onkeydown = (e) => {
+        if (e.key === 'Enter') confirmExport();
+        if (e.key === 'Escape') closeModal();
+    };
+}
+
+function closeModal() {
+    document.getElementById('name-modal').classList.remove('show');
+}
+
+function confirmExport() {
+    const name = document.getElementById('student-name-input').value.trim();
+    if (!name) {
+        alert("Please enter a name to continue.");
+        return;
+    }
+    
+    userStats.name = name;
+    saveStats();
+    closeModal();
+    
+    generatePNGReport(name);
+}
+
+function generatePNGReport(name) {
+    const today = new Date().toDateString();
+    const todayAttemptsRaw = userStats.examAttempts.filter(a => new Date(a.date).toDateString() === today);
+    
+    if (todayAttemptsRaw.length === 0) {
+        alert("No exam practice recorded for today yet!");
+        return;
+    }
+
+    // Take latest attempt for each question
+    const latestAttempts = [];
+    const seenIds = new Set();
+    [...todayAttemptsRaw].sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(att => {
+        if (!seenIds.has(att.id)) {
+            latestAttempts.push(att);
+            seenIds.add(att.id);
+        }
+    });
+    latestAttempts.sort((a,b) => {
+        const idxA = examQuestions.findIndex(q => q.id === a.id);
+        const idxB = examQuestions.findIndex(q => q.id === b.id);
+        return idxA - idxB;
+    });
+
+    const attemptedIds = new Set(latestAttempts.map(a => a.id));
+    const unattempted = examQuestions.filter(q => !attemptedIds.has(q.id));
+
+    document.getElementById('report-name-val').innerText = name;
+    document.getElementById('report-date-val').innerText = new Date().toLocaleDateString('en-GB', { 
+        day: 'numeric', month: 'long', year: 'numeric' 
+    });
+    
+    let contentHtml = `
+        <div class="report-section">
+            <div class="summary-box">
+                <div class="summary-stat">
+                    <span class="stat-val">${latestAttempts.length} / ${examQuestions.length}</span>
+                    <span class="stat-lbl">Questions Attempted</span>
+                </div>
+                <div class="summary-stat">
+                    <span class="stat-val">${latestAttempts.reduce((acc, curr) => acc + curr.marks, 0)} / ${latestAttempts.reduce((acc, curr) => acc + curr.total, 0)}</span>
+                    <span class="stat-lbl">Today's Marks</span>
+                </div>
+            </div>
+        </div>
+        <div class="report-section">
+            <h2>Marked Question Breakdown</h2>
+            ${latestAttempts.map(att => {
+                const q = examQuestions.find(eq => eq.id === att.id);
+                const statusClass = att.marks === att.total ? 'correct' : (att.marks > 0 ? 'partial' : 'incorrect');
+                return `
+                    <div class="marked-item ${statusClass}">
+                        <div class="item-score">${att.marks} / ${att.total}</div>
+                        <div class="item-q">${q.text}</div>
+                        
+                        <span class="item-label">Student Response</span>
+                        <div class="item-ans">${att.answer || '(Empty)'}</div>
+                        
+                        <span class="item-label">Mark Scheme</span>
+                        <div class="item-scheme">
+                            <ul style="margin: 0; padding-left: 20px;">
+                                ${q.scheme.map(s => `<li>${s}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            }).join('')}
+        </div>
+    `;
+
+    if (unattempted.length > 0) {
+        contentHtml += `
+            <div class="report-section">
+                <h2>Unattempted Questions</h2>
+                <ul class="unattempted-list">
+                    ${unattempted.map(q => `<li class="unattempted-item">${q.text} (${q.marks} marks)</li>`).join('')}
+                </ul>
+            </div>
+        `;
+    }
+
+    document.getElementById('report-content').innerHTML = contentHtml;
+
+    // Trigger PNG Export
+    const exportDiv = document.getElementById('report-export-container');
+    html2canvas(exportDiv, { scale: 2, backgroundColor: "#ffffff" }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `GCSE_Report_${name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+    }).catch(err => {
+        console.error("PNG Gen Error:", err);
+        alert("Could not generate image. Check console for details.");
+    });
+}
+
+function restart() {
+    switchMode('learn');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function filterExam(topic) {
+    currentExamTopic = topic;
+    document.querySelectorAll('.exam-tab').forEach(btn => {
+        const btnText = btn.innerText.toLowerCase();
+        btn.classList.toggle('active', btnText.includes(topic));
+    });
+    loadExamQuestions();
+}
+
+function toRoman(num) {
+    const map = { m: 1000, cm: 900, d: 500, cd: 400, c: 100, xc: 90, l: 50, xl: 40, x: 10, ix: 9, v: 5, iv: 4, i: 1 };
+    let roman = '', i;
+    for (i in map) {
+        while (num >= map[i]) {
+            roman += i;
+            num -= map[i];
+        }
+    }
+    return roman;
+}
+
+function loadExamQuestions() {
+    const container = document.getElementById('exam-questions-container');
+    const filtered = examQuestions.filter(q => currentExamTopic === 'all' || q.topic === currentExamTopic);
+    container.innerHTML = filtered.map((q, i) => {
+        const roman = toRoman(i + 1);
+        let questionHtml = `
+            <div class="exam-paper-card" id="q-card-${q.id}">
+                <div class="q-number">
+                    <span style="margin-right: 12px;">(${roman})</span>
+                    <div class="q-text">${q.text}</div>
+                </div>
+        `;
+
+        if (q.type === 'text') {
+            if (q.inputs) {
+                questionHtml += `
+                    <div class="multi-input-container" style="margin-top: 24px;">
+                        ${q.inputs.map((inp, idx) => `
+                            <div class="input-row">
+                                <span class="input-label ${inp.label.length > 3 ? 'large' : ''}">${inp.label}</span>
+                                <textarea class="dotted-input" id="exam-answer-${q.id}-${idx}" 
+                                          style="min-height: ${(inp.rows || 1) * 31}px; margin-top: 0;" 
+                                          placeholder="Type answer part here..."></textarea>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                questionHtml += `
+                    <textarea class="dotted-input" id="exam-answer-${q.id}" placeholder="Type your answer here..."></textarea>
+                `;
+            }
+        } else if (q.type === 'matching') {
+            questionHtml += `
+                <div class="matching-container" style="margin-top: 20px;">
+                    ${q.matches.map((m, j) => `
+                        <div class="matching-row">
+                            <span style="font-weight: 500;">${m.term}</span>
+                            <select class="exam-select" id="exam-answer-${q.id}-${j}">
+                                <option value="">-- Select Match --</option>
+                                ${q.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                            </select>
+                        </div>
+                    `).join('')}
+                </div>`;
+        }
+
+        questionHtml += `
+            <div class="marks-award">[${q.marks}]</div>
+
+            <div class="btn-row" style="justify-content: flex-start; margin-top: 32px; border-top: 1px solid #f1f5f9; padding-top: 16px;">
+                <button class="btn btn-primary" onclick="autoMarkExam('${q.id}')">✨ Check Answer</button>
+            </div>
+
+            <div class="auto-mark-feedback" id="feedback-${q.id}">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <span style="font-weight: 700;">Result:</span>
+                    <span class="match-score" id="score-${q.id}">0 / ${q.marks}</span>
+                </div>
+                <div id="criteria-${q.id}" style="font-size: 0.9rem; line-height: 1.8;"></div>
+            </div>
+
+            <div class="mark-scheme" id="exam-ms-${q.id}">
+                <h4 style="color: #64748b; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">Mark Scheme</h4>
+                <ul style="border-left: 2px solid #e2e8f0; padding-left: 20px; list-style: none; font-size: 0.95rem;">
+                    ${q.type === 'text' ? q.scheme.map(p => `<li style="margin-bottom: 6px;">• ${p}</li>`).join('') : q.matches.map(m => `<li style="margin-bottom: 6px;">• <strong>${m.term}</strong>: ${m.type}</li>`).join('')}
+                </ul>
+            </div>
+        </div>`;
+        return questionHtml;
+    }).join('');
+}
+
+function autoMarkExam(questionId) {
+    const question = examQuestions.find(q => q.id === questionId);
+    const feedbackDiv = document.getElementById(`feedback-${questionId}`);
+    const scoreSpan = document.getElementById(`score-${questionId}`);
+    const criteriaDiv = document.getElementById(`criteria-${questionId}`);
+    
+    let marksEarned = 0;
+    let criteriaHtml = '';
+    let userAnswer = "";
+
+    if (question.type === 'text') {
+        if (question.inputs) {
+            userAnswer = question.inputs.map((_, i) => document.getElementById(`exam-answer-${questionId}-${i}`).value).join(" ").toLowerCase();
+        } else {
+            userAnswer = document.getElementById(`exam-answer-${questionId}`).value.toLowerCase();
+        }
+
+        if (!userAnswer.trim()) {
+            alert("Please type an answer first!");
+            return;
+        }
+
+        question.markCriteria.forEach(criterion => {
+            const foundKeyword = criterion.keywords.find(kw => {
+                // If it looks like a regex part (contains .*), use it directly
+                const pattern = kw.includes('.*') ? kw : `\\b${kw.toLowerCase()}`;
+                const regex = new RegExp(pattern, 'i');
+                return regex.test(userAnswer);
+            });
+
+            if (foundKeyword) {
+                marksEarned += criterion.points;
+                criteriaHtml += `<div>✅ Found point related to: <span class="keyword-match">${foundKeyword}</span> (+${criterion.points})</div>`;
+            } else {
+                criteriaHtml += `<div style="color: #94a3b8;">❌ Missing point: <span class="keyword-missing">${criterion.keywords[0]}</span></div>`;
+            }
+        });
+    } else if (question.type === 'matching') {
+        question.matches.forEach((m, j) => {
+            const select = document.getElementById(`exam-answer-${questionId}-${j}`);
+            const userAnswer = select.value;
+            if (userAnswer === m.type) {
+                marksEarned += 1;
+                criteriaHtml += `<div>✅ Correct: <strong>${m.term}</strong> matched to <strong>${m.type}</strong> (+1)</div>`;
+                select.style.borderColor = "#10b981";
+                select.style.background = "#f0fdf4";
+            } else {
+                criteriaHtml += `<div style="color: #94a3b8;">❌ Incorrect: <strong>${m.term}</strong> (Selected: ${userAnswer || 'None'})</div>`;
+                select.style.borderColor = "#ef4444";
+                select.style.background = "#fef2f2";
+            }
+        });
+    }
+
+    marksEarned = Math.min(marksEarned, question.marks);
+    scoreSpan.textContent = `${marksEarned} / ${question.marks}`;
+    criteriaDiv.innerHTML = criteriaHtml;
+    feedbackDiv.classList.add('show');
+    document.getElementById(`exam-ms-${questionId}`).classList.add('show');
+    
+    // Capture answer for report recording
+    let userAnswerDisp = userAnswer;
+    if (question.type === 'matching') {
+        const matches = [];
+        question.matches.forEach((m, j) => {
+            matches.push(`${m.term}: ${document.getElementById(`exam-answer-${questionId}-${j}`).value || 'None'}`);
+        });
+        userAnswerDisp = matches.join(", ");
+    }
+
+    // Record stats
+    recordExamMark(questionId, marksEarned, question.marks, question.topic, userAnswerDisp);
+    
+    feedbackDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function revealAllExam() {
+    document.querySelectorAll('#exam-screen .mark-scheme').forEach(ms => ms.classList.add('show'));
+    document.querySelectorAll('#exam-screen .auto-mark-feedback').forEach(fb => fb.classList.add('show'));
+}
+</script>
+</body>
+</html>
