@@ -1428,7 +1428,11 @@ function generatePNGReport(name, callback) {
             <h2>Exam Practice Breakdown</h2>
             ${latestAttempts.map(att => {
                 const q = examQuestions.find(eq => eq.id === att.id);
+                if (!q) return '';
                 const statusClass = att.marks === att.total ? 'correct' : (att.marks > 0 ? 'partial' : 'incorrect');
+                const schemeHtml = q.type === 'matching'
+                    ? (q.matches || []).map(m => `<li><strong>${m.term}</strong>: ${m.type}</li>`).join('')
+                    : (q.scheme  || []).map(s => `<li>${s}</li>`).join('');
                 return `
                     <div class="marked-item ${statusClass}">
                         <div class="item-score">${att.marks} / ${att.total}</div>
@@ -1436,11 +1440,7 @@ function generatePNGReport(name, callback) {
                         <span class="item-label">Student Response</span>
                         <div class="item-ans">${att.answer || '(Empty)'}</div>
                         <span class="item-label">Mark Scheme</span>
-                        <div class="item-scheme"><ul style="margin:0;padding-left:20px;">
-                            ${q.type === 'matching'
-                                ? q.matches.map(m => `<li><strong>${m.term}</strong>: ${m.type}</li>`).join('')
-                                : q.scheme.map(s => `<li>${s}</li>`).join('')}
-                        </ul></div>
+                        <div class="item-scheme"><ul style="margin:0;padding-left:20px;">${schemeHtml}</ul></div>
                     </div>`;
             }).join('')}
         </div>`;
