@@ -1290,10 +1290,12 @@ function switchMode(mode) {
     } else if (mode === 'practice') {
         document.getElementById('mode-practice').classList.add('active');
         document.getElementById('practice-screen').classList.remove('hidden');
-        practiceState.score = 0;
-        practiceState.streak = 0;
-        practiceState.sessionCount = 0;
-        practiceState.usedIds = [];
+        if (!restorePracticeSession()) {
+            practiceState.score = 0;
+            practiceState.streak = 0;
+            practiceState.sessionCount = 0;
+            practiceState.usedIds = [];
+        }
         updatePracticeHUD();
         loadPracticeQuestion();
     }
@@ -1854,6 +1856,7 @@ function autoMarkPractice() {
     }
     updatePracticeHUD();
     recordPracticeAttempt(q.id, marksEarned, q.marks, q.topic);
+    savePracticeSession();
 
     // Points earned row
     let pointsRowHtml = '';
@@ -1915,6 +1918,27 @@ function showMilestoneToast(msg) {
     toast.textContent = msg;
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 3200);
+}
+
+// ── Session persistence ────────────────────────────────────────
+function savePracticeSession() {
+    localStorage.setItem('gcse_practice_session', JSON.stringify({
+        date: new Date().toDateString(),
+        score: practiceState.score,
+        streak: practiceState.streak,
+        sessionCount: practiceState.sessionCount,
+        usedIds: practiceState.usedIds
+    }));
+}
+
+function restorePracticeSession() {
+    const saved = JSON.parse(localStorage.getItem('gcse_practice_session') || 'null');
+    if (!saved || saved.date !== new Date().toDateString()) return false;
+    practiceState.score        = saved.score        || 0;
+    practiceState.streak       = saved.streak       || 0;
+    practiceState.sessionCount = saved.sessionCount || 0;
+    practiceState.usedIds      = saved.usedIds      || [];
+    return true;
 }
 
 // ── Teacher / Moderator Override (Shift+D E V) ─────────────────
@@ -2004,6 +2028,7 @@ function applyDevOverride() {
     // Refresh visible feedback score
     document.getElementById('prac-score').textContent = `${newMarks} / ${q.marks}`;
     updatePracticeHUD();
+    savePracticeSession();
     closeDevModal();
     showMilestoneToast(`✏️ Override applied — ${newMarks} / ${q.marks}`);
 }
