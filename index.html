@@ -443,6 +443,26 @@
             font-family: inherit;
         }
         .modal-input:focus { border-color: var(--primary); }
+
+        .btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .btn-loading::after {
+            content: "";
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -494,7 +514,7 @@
         </div>
 
         <!-- Hidden Report Template -->
-        <div id="report-template" style="position: absolute; left: -9999px; top: 0;">
+        <div id="report-template" style="position: fixed; left: 0; top: 0; z-index: -1; opacity: 0; pointer-events: none; width: 800px;">
             <div id="report-export-container">
                 <div class="report-header">
                     <h1>GCSE Computer Science Progress</h1>
@@ -1015,25 +1035,46 @@ function closeModal() {
 }
 
 function confirmExport() {
-    const name = document.getElementById('student-name-input').value.trim();
+    const nameInput = document.getElementById('student-name-input');
+    const name = nameInput.value.trim();
     if (!name) {
         alert("Please enter a name to continue.");
         return;
     }
     
+    const btn = document.querySelector('#name-modal .btn-primary');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.classList.add('btn-loading');
+    btn.innerHTML = 'Generating...';
+
     userStats.name = name;
     saveStats();
-    closeModal();
     
-    generatePNGReport(name);
+    // Give UI time to update before blocking canvas render
+    setTimeout(() => {
+        generatePNGReport(name, () => {
+            btn.disabled = false;
+            btn.classList.remove('btn-loading');
+            btn.innerHTML = originalText;
+            closeModal();
+        });
+    }, 100);
 }
 
-function generatePNGReport(name) {
+function generatePNGReport(name, callback) {
+    if (typeof html2canvas === 'undefined') {
+        alert("The reporting library (html2canvas) is not loaded. Please ensure you have an active internet connection and reload the page.");
+        if (callback) callback();
+        return;
+    }
+
     const today = new Date().toDateString();
     const todayAttemptsRaw = userStats.examAttempts.filter(a => new Date(a.date).toDateString() === today);
     
     if (todayAttemptsRaw.length === 0) {
         alert("No exam practice recorded for today yet!");
+        if (callback) callback();
         return;
     }
 
@@ -1109,18 +1150,41 @@ function generatePNGReport(name) {
         `;
     }
 
+    const template = document.getElementById('report-template');
     document.getElementById('report-content').innerHTML = contentHtml;
 
     // Trigger PNG Export
     const exportDiv = document.getElementById('report-export-container');
-    html2canvas(exportDiv, { scale: 2, backgroundColor: "#ffffff" }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = `GCSE_Report_${name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.png`;
-        link.href = canvas.toDataURL("image/png");
-        link.click();
+    
+    // Safety check for script protocols
+    html2canvas(exportDiv, { 
+        scale: 2, 
+        backgroundColor: "#ffffff",
+        useCORS: true, 
+        logging: false 
+    }).then(canvas => {
+        try {
+            const dataUrl = canvas.toDataURL("image/png");
+            const link = document.createElement('a');
+            const filename = `GCSE_Report_${name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.png`;
+            
+            link.download = filename;
+            link.href = dataUrl;
+            document.body.appendChild(link); // Required for some browsers
+            link.click();
+            document.body.removeChild(link);
+            
+            if (callback) callback();
+        } catch (err) {
+            console.error("Download Error:", err);
+            alert("Canvas generation succeeded but download failed. You can right-click and save the image if we open it in a new tab. Would you like to try?");
+            window.open(canvas.toDataURL("image/png"));
+            if (callback) callback();
+        }
     }).catch(err => {
         console.error("PNG Gen Error:", err);
-        alert("Could not generate image. Check console for details.");
+        alert("Could not generate report image. Please check your internet connection (for the library) and try again.");
+        if (callback) callback();
     });
 }
 
